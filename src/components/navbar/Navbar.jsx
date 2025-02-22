@@ -1,6 +1,6 @@
 import React from 'react';
-import symbol from '../assets/Symbol.png';
-import './Navbar.css'
+import symbol from '../../assets/Symbol.png';
+import './navbar.css'
 
 const Navbar= () => {
     return(<div className='bar'>
