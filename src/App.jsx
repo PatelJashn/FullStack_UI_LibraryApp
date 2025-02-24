@@ -1,29 +1,24 @@
-import { useState } from 'react'
-import './App.css'
-import Navbar from './components/navbar/Navbar'
-import Footer from './components/footer/Footer'
-import Homepage from './pages/homepage/Homepage'
-import Box1 from './pages/homepage/Box1'
-import Box2 from './pages/homepage/Box2'
-import Box3 from './pages/homepage/Box3'
-import Rest from './pages/homepage/Rest'
-import Leaderboard from './pages/homepage/Leaderboard'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+import Homepagefinal from "./pages/homepage/Homepagefinal";
+import Login from "./pages/loginpage/Login";
+import Browserfinal from "./pages/categories/Browserfinal";
+import Signup from "./pages/signuppage/signup"; // Capitalized 'Signup'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-      <Navbar/>
-      <Homepage/>
-      <Box1/>
-      <Box2/>
-      <Box3/>
-      <Rest/>
-      <Leaderboard/>
-      <Footer/>
-    </>
-  )
-}
+    <Router>
+      <Navbar /> {/* Navbar always stays at the top */}
+      <Routes>
+        <Route path="/" element={<Homepagefinal />} /> {/* Fixed component name */}
+        <Route path="/categories" element={<Browserfinal />} /> {/* Fixed component name */}
+        <Route path="/login" element={<Login />} /> {/* Login Page */}
+        <Route path="/signup" element={<Signup />} /> {/* Added Signup Page */}
+      </Routes>
+      <Footer /> {/* Added Footer to always stay at the bottom */}
+    </Router>
+  );
+};
 
-export default App
+export default App;
