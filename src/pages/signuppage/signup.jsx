@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 const Signup = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -188,7 +188,7 @@ const Signup = () => {
           <button type="submit" style={styles.button}>Sign Up</button>
         </form>
         <p style={styles.signupText}>
-          Already have an account? <a href="/login" style={styles.link}>Login</a>
+          Already have an account? <Link to="/login" style={styles.link}>Login</Link>
         </p>
       </div>
     </div>

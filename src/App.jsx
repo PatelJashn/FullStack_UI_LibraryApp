@@ -4,19 +4,20 @@ import Footer from "./components/footer/Footer";
 import Homepagefinal from "./pages/homepage/Homepagefinal";
 import Login from "./pages/loginpage/Login";
 import Browserfinal from "./pages/categories/Browserfinal";
-import Signup from "./pages/signuppage/signup"; // Capitalized 'Signup'
+import Signup from "./pages/signuppage/Signup"; // Fixed capitalization
 
 const App = () => {
   return (
     <Router>
       <Navbar /> {/* Navbar always stays at the top */}
       <Routes>
-        <Route path="/Homepage" element={<Homepagefinal />} /> {/* Fixed component name */}
-        <Route path="/categories" element={<Browserfinal />} /> {/* Fixed component name */}
-        <Route path="/login" element={<Login />} /> {/* Login Page */}
-        <Route path="/signup" element={<Signup />} /> {/* Added Signup Page */}
+        <Route path="/" element={<Homepagefinal />} /> {/* Index page directs to Homepage */}
+        <Route path="/homepage" element={<Homepagefinal />} /> {/* Optional: Keep this for direct access */}
+        <Route path="/categories" element={<Browserfinal />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
-      <Footer /> {/* Added Footer to always stay at the bottom */}
+      <Footer /> {/* Footer always stays at the bottom */}
     </Router>
   );
 };
