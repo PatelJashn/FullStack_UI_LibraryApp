@@ -7,29 +7,31 @@ const Navbar = () => {
   return (
     <div className='bar'>
       <nav>
-        <ul>
+        <ul className="nav-left">
           <li className='image'>
             <a>
               <img src={symbol} alt="symbol" />
             </a>
           </li>
+          <li className='tab'>
+            <Link to="/homepage">Homepage</Link>
+          </li>
           <li className='tab' id='cate'>
             <Link to="/categories">Categories</Link>  
           </li>
           <li className='tab'>
-            <a>Version 1.0</a>
+            <Link>About Us</Link>
           </li>
           <li className='tab'>
-            <a>About Us</a>
+            <Link>Add Your Own UI</Link>
           </li>
-          <li className='tab'>
-            <a>Add Your Own UI</a>
-          </li>
+        </ul>
+        <ul className="nav-right">
           <li className='tab' id='signin'>
-            <Link to="/signup">Signin</Link>  
+            <Link to="/signup" className="btn-light">Sign Up</Link>  
           </li>
           <li className='tab' id='login'>
-            <Link to="/login">Login</Link>
+            <Link to="/login" className="btn-dark">Login</Link>
           </li>
         </ul>
       </nav>
