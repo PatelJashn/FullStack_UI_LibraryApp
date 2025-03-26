@@ -5,11 +5,12 @@ body {
   color: white;
 }
 
-.ui-gallery {
+.ui-container {
   display: flex;
   min-height: 100vh;
 }
 
+/* Sidebar */
 .sidebar {
   width: 250px;
   background-color: #161616;
@@ -19,7 +20,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: fixed;
+  left: 0;
+  top: 60px; /* Adjust based on header height */
+  height: calc(100vh - 60px); /* Leaves space for the header */
+  overflow-y: auto; /* Allows scrolling if content overflows */
 }
+
 
 .sidebar-title {
   font-size: 18px;
@@ -44,23 +51,29 @@ body {
   transform: scale(1.05);
 }
 
+/* Main Content */
 .main-content {
   flex: 1;
   padding: 40px;
+  margin-left: 270px; /* Ensures the main content does not overlap with the sidebar */
 }
 
 .main-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
+/* Grid container */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Responsive layout */
   gap: 20px;
+  justify-content: center; /* Centers the items */
+  padding-top: 10px;
 }
 
+/* Grid items */
 .grid-item {
   background-color: #1a1a1a;
   padding: 20px;
