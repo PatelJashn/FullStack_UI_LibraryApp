@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const styles = {
     container: {
@@ -66,7 +71,7 @@ const Login = () => {
       background: "transparent",
       border: "none",
       cursor: "pointer",
-      fontSize: "20px", // Simplistic, balanced size
+      fontSize: "20px",
       color: "#bbb",
       transition: "0.3s",
       display: "flex",
@@ -92,6 +97,18 @@ const Login = () => {
       transition: "0.3s",
       textShadow: "0px 0px 5px rgba(255, 255, 255, 0.3)",
     },
+    buttonDisabled: {
+      width: "100%",
+      padding: "12px",
+      background: "rgba(107, 71, 182, 0.5)",
+      color: "rgba(255, 255, 255, 0.7)",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "not-allowed",
+      fontSize: "16px",
+      fontWeight: "bold",
+      transition: "0.3s",
+    },
     signupText: {
       marginTop: "15px",
       fontSize: "14px",
@@ -102,13 +119,63 @@ const Login = () => {
       textDecoration: "none",
       fontWeight: "bold",
     },
+    errorMessage: {
+      color: "#ff6b6b",
+      fontSize: "14px",
+      marginBottom: "15px",
+      padding: "10px",
+      background: "rgba(255, 107, 107, 0.1)",
+      borderRadius: "6px",
+      border: "1px solid rgba(255, 107, 107, 0.3)",
+    },
+    successMessage: {
+      color: "#51cf66",
+      fontSize: "14px",
+      marginBottom: "15px",
+      padding: "10px",
+      background: "rgba(81, 207, 102, 0.1)",
+      borderRadius: "6px",
+      border: "1px solid rgba(81, 207, 102, 0.3)",
+    },
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5002/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Login successful
+        login(data.user, data.token);
+        navigate("/");
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (error) {
+      setError("Network error. Please check your connection.");
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.glassBox}>
-        <h2 style={styles.title}>Welcome Back</h2>
-        <form>
+        <h2 style={styles.title}>Login</h2>
+        
+        {error && <div style={styles.errorMessage}>{error}</div>}
+        
+        <form onSubmit={handleSubmit}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Email</label>
             <input
@@ -117,6 +184,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               style={styles.input}
+              disabled={loading}
             />
           </div>
           <div style={styles.inputGroup}>
@@ -127,13 +195,27 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               style={styles.input}
+              disabled={loading}
             />
-            
+            <button
+              type="button"
+              style={styles.eyeButton}
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={loading}
+            >
+              {showPassword ? "👁️" : "👁️‍🗨️"}
+            </button>
           </div>
-          <button type="submit" style={styles.button}>Login</button>
+          <button 
+            type="submit" 
+            style={loading ? styles.buttonDisabled : styles.button}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
         <p style={styles.signupText}>
-          Don't have an account? <Link to ="/signup" style={styles.link}>Sign up</Link>
+          Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
         </p>
       </div>
     </div>

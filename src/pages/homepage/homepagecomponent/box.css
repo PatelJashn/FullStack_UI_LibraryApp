@@ -1,34 +1,43 @@
+/* Reset and page defaults */
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Ensure that padding and border don't affect width */
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
-    background-color: #1c1c1e; /* Dark background */
-    color: #ffffff; /* White text color */
+    background-color: #1c1c1e; /* Dark page background */
+    color: #ffffff; /* White text */
 }
 
+/* Ensure all elements respect box sizing */
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* Main container for boxes */
 .container1 {
     display: flex;
-    gap: 20px; 
+    gap: 20px;
     padding: 10px;
+    justify-content: space-between;
     overflow: hidden;
-    justify-content: space-between; 
+    background-color: #1c1c1e; /* Match body background to avoid white gap */
 }
 
+/* Individual box styling */
 .box1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 280px; /* Fixed width of each box */
-    height: 280px; /* Fixed height of each box */
-    background-color: #333; /* Box background color */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    width: 280px;
+    height: 280px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, background-color 0.3s ease;
-    box-sizing: border-box; /* Ensures that padding doesn't affect width */
 }
 
+/* Hover effect for boxes */
 .box1:hover {
-    background-color: #444; /* Slightly lighter on hover */
-    transform: scale(1.05); /* Slight zoom on hover */
+    background-color: #444;
+    transform: scale(1.05);
 }
