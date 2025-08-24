@@ -323,4 +323,110 @@ router.post("/:id/download", async (req, res) => {
   }
 });
 
+// AI-powered code modification
+router.post("/:id/ai-modify", async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    
+    if (!prompt || !prompt.trim()) {
+      return res.status(400).json({ message: "Prompt is required" });
+    }
+
+    // Get the component
+    let component;
+    if (mongoose.connection.readyState !== 1) {
+      // Use local storage
+      component = localComponents.get(req.params.id);
+    } else {
+      // MongoDB is connected - use database
+      component = await UIComponent.findById(req.params.id);
+    }
+    
+    if (!component) {
+      return res.status(404).json({ message: "Component not found" });
+    }
+
+    // Prepare the AI prompt
+    const aiPrompt = `Modify this HTML and CSS based on the request: "${prompt}"
+
+Original HTML: ${component.code.html}
+Original CSS: ${component.code.css}
+
+Return the modified code in this format:
+HTML: [modified HTML]
+CSS: [modified CSS]`;
+
+    // Call Hugging Face API (you'll need to add your API key to environment variables)
+    const hfApiKey = process.env.HUGGINGFACE_API_KEY;
+    
+    if (!hfApiKey) {
+      return res.status(500).json({ 
+        message: "Hugging Face API key not configured. Please add HUGGINGFACE_API_KEY to your environment variables." 
+      });
+    }
+
+    const response = await fetch('https://api-inference.huggingface.co/models/google/flan-t5-base', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${hfApiKey}`
+      },
+      body: JSON.stringify({
+        inputs: aiPrompt,
+        parameters: {
+          max_new_tokens: 1000,
+          temperature: 0.3,
+          do_sample: true,
+          top_p: 0.9
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API Error:', errorData);
+      return res.status(500).json({ 
+        message: "Error calling AI service", 
+        error: errorData.error?.message || 'Unknown error' 
+      });
+    }
+
+    const data = await response.json();
+    const aiResponse = data[0]?.generated_text || data[0]?.text || data;
+
+    // Parse the AI response to extract HTML and CSS
+    const htmlMatch = aiResponse.match(/HTML:\s*([\s\S]*?)(?=CSS:|$)/i);
+    const cssMatch = aiResponse.match(/CSS:\s*([\s\S]*?)$/i);
+
+    if (!htmlMatch || !cssMatch) {
+      return res.status(500).json({ 
+        message: "Could not parse AI response. Please try again." 
+      });
+    }
+
+    const modifiedHtml = htmlMatch[1].trim();
+    const modifiedCss = cssMatch[1].trim();
+
+    // Return the modified code
+    res.json({
+      success: true,
+      modifiedCode: {
+        html: modifiedHtml,
+        css: modifiedCss
+      },
+      originalCode: {
+        html: component.code.html,
+        css: component.code.css
+      }
+    });
+
+  } catch (error) {
+    console.error("AI modification error:", error);
+    res.status(500).json({ 
+      message: "Error processing AI request", 
+      error: error.message 
+    });
+  }
+});
+
 export default router; 

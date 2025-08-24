@@ -13,6 +13,8 @@ const ComponentDetail = () => {
   const [activeTab, setActiveTab] = useState("preview");
   const [aiPrompt, setAiPrompt] = useState("");
   const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [modifiedComponent, setModifiedComponent] = useState(null);
+  const [showModified, setShowModified] = useState(false);
 
   useEffect(() => {
     if (location.state && location.state.component) {
@@ -64,12 +66,48 @@ const ComponentDetail = () => {
 
   const handleAiPrompt = async () => {
     if (!aiPrompt.trim()) return;
+    
     setIsAiProcessing(true);
-    console.log("AI Prompt:", aiPrompt);
-    setTimeout(() => {
+    setModifiedComponent(null);
+    setShowModified(false);
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${id}/ai-modify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: aiPrompt })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to process AI request');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setModifiedComponent({
+          ...component,
+          code: data.modifiedCode
+        });
+        setShowModified(true);
+        setAiPrompt("");
+      } else {
+        throw new Error(data.message || 'AI processing failed');
+      }
+    } catch (error) {
+      console.error("AI processing error:", error);
+      alert(`AI Processing Error: ${error.message}`);
+    } finally {
       setIsAiProcessing(false);
-      setAiPrompt("");
-    }, 2000);
+    }
+  };
+
+  const resetToOriginal = () => {
+    setModifiedComponent(null);
+    setShowModified(false);
   };
 
   if (loading) {
@@ -114,14 +152,27 @@ const ComponentDetail = () => {
       <div className="detail-content">
         {/* Left Side - Preview Panel */}
         <div className="preview-section">
+          <div className="preview-header">
+            <h3>Preview</h3>
+            {showModified && (
+              <div className="preview-actions">
+                <button
+                  className="action-button"
+                  onClick={resetToOriginal}
+                >
+                  Reset to Original
+                </button>
+              </div>
+            )}
+          </div>
           <div className="preview-frame">
-            {component.code?.html || component.code?.css ? (
+            {(showModified ? modifiedComponent : component)?.code?.html || (showModified ? modifiedComponent : component)?.code?.css ? (
               <div 
                 className="component-preview"
                 dangerouslySetInnerHTML={{ 
                   __html: `
-                    <style>${component.code?.css || ''}</style>
-                    ${component.code?.html || ''}
+                    <style>${(showModified ? modifiedComponent : component)?.code?.css || ''}</style>
+                    ${(showModified ? modifiedComponent : component)?.code?.html || ''}
                   `
                 }}
               />
@@ -165,14 +216,14 @@ const ComponentDetail = () => {
                 <div className="code-header">
                   <button
                     className="copy-button"
-                    onClick={() => copyToClipboard(component.code?.html || '', "html")}
+                    onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.code?.html || '', "html")}
                   >
                     {copied.html ? <Check size={16} /> : <Copy size={16} />}
                     {copied.html ? "Copied!" : "Copy"}
                   </button>
                 </div>
                 <pre className="code-block html-code">
-                  <code>{component.code?.html || ''}</code>
+                  <code>{(showModified ? modifiedComponent : component)?.code?.html || ''}</code>
                 </pre>
               </div>
             )}
@@ -182,14 +233,14 @@ const ComponentDetail = () => {
                 <div className="code-header">
                   <button
                     className="copy-button"
-                    onClick={() => copyToClipboard(component.code?.css || '', "css")}
+                    onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.code?.css || '', "css")}
                   >
                     {copied.css ? <Check size={16} /> : <Copy size={16} />}
                     {copied.css ? "Copied!" : "Copy"}
                   </button>
                 </div>
                 <pre className="code-block css-code">
-                  <code>{component.code?.css || ''}</code>
+                  <code>{(showModified ? modifiedComponent : component)?.code?.css || ''}</code>
                 </pre>
               </div>
             )}
@@ -199,15 +250,21 @@ const ComponentDetail = () => {
                 <div className="ai-header">
                   <h3>AI Code Assistant</h3>
                   <p>Describe the changes you want to make to this component</p>
+                  {showModified && (
+                    <div className="ai-status">
+                      <span className="status-badge modified">Modified Version Active</span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="ai-prompt-section">
                   <textarea
                     className="ai-prompt-input"
-                    placeholder="e.g., 'Make the button rounded with a blue gradient', 'Add hover effects to all elements', 'Change the color scheme to dark mode'"
+                    placeholder="e.g., 'Make the button rounded with a blue gradient', 'Add hover effects to all elements', 'Change the color scheme to dark mode', 'Make the div bigger and change the color to red'"
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
                     rows={4}
+                    disabled={isAiProcessing}
                   />
                   <button
                     className="ai-submit-button"
@@ -228,13 +285,25 @@ const ComponentDetail = () => {
                   </button>
                 </div>
 
+                {showModified && (
+                  <div className="ai-results">
+                    <h4>AI Modifications Applied</h4>
+                    <p>The component has been modified based on your prompt. You can:</p>
+                    <ul>
+                      <li>View the changes in the preview panel</li>
+                      <li>Copy the modified code from the HTML/CSS tabs</li>
+                      <li>Click "Reset to Original" to revert changes</li>
+                    </ul>
+                  </div>
+                )}
+
                 <div className="ai-info">
                   <h4>How it works:</h4>
                   <ul>
                     <li>Describe the changes you want in natural language</li>
                     <li>AI will analyze your request and modify the code</li>
                     <li>Preview will update automatically with the changes</li>
-                    <li>You can download the modified code</li>
+                    <li>You can copy the modified code or reset to original</li>
                   </ul>
                 </div>
               </div>
