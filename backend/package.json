@@ -5,10 +5,7 @@
   "main": "server.js",
   "scripts": {
   "start": "node server.js",
-  "dev": "node server.js",
-  "frontend": "vite",
-  "prebuild": "chmod +x ./node_modules/.bin/vite",
-  "build": "vite build"
+  "dev": "node server.js"
 },
 
   "dependencies": {
@@ -23,7 +20,5 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
   },
-  "devDependencies": {
-    "vite": "^5.0.0"
-  }
+  "devDependencies": {}
 }
