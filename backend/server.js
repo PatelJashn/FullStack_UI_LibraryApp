@@ -72,12 +72,9 @@ const server = app.listen(PORT, () => {
 // Connect to MongoDB with better error handling
 mongoose
   .connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 10000, // increased timeout
     socketTimeoutMS: 45000,
     bufferCommands: false,
-    bufferMaxEntries: 0,
   })
   .then(() => {
     console.log("✅ MongoDB Connected Successfully");
