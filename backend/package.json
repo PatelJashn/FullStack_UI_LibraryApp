@@ -1,13 +1,13 @@
 {
-  "name": "backend",
+  "name": "uiforge",
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "echo 'Nothing to build'"
-
+    "frontend": "vite",
+    "build": "chmod +x ./node_modules/.bin/vite && vite build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -20,5 +20,8 @@
     "mongoose": "^7.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }
