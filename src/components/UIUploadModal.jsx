@@ -42,7 +42,7 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
       };
 
-      const response = await fetch('http://localhost:5002/api/ui-components', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

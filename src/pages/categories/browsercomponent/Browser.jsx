@@ -42,7 +42,7 @@ const UIGallery = () => {
         params.append("category", selectedCategory);
       }
 
-      const response = await fetch(`http://localhost:5002/api/ui-components?${params}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components?${params}`);
       if (response.ok) {
         const data = await response.json();
         setComponents(data.components || []);
@@ -101,7 +101,7 @@ const UIGallery = () => {
     if (window.confirm(`Are you sure you want to delete ${selectedComponents.size} component(s)?`)) {
       try {
         const deletePromises = Array.from(selectedComponents).map(async (componentId) => {
-          const response = await fetch(`http://localhost:5002/api/ui-components/${componentId}`, {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${componentId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',

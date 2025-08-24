@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyToken = async (tokenToVerify) => {
     try {
-      const response = await fetch("http://localhost:5002/api/auth/profile", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/auth/profile`, {
         headers: {
           "Authorization": `Bearer ${tokenToVerify}`,
           "Content-Type": "application/json"
