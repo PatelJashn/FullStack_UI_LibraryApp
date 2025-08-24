@@ -15,9 +15,10 @@ const app = express();
 app.use(cors({ 
   origin: [
     "http://localhost:5173", 
-    "https://your-vercel-app-name.vercel.app", // Replace with your actual Vercel domain
-    "https://your-vercel-app-name-git-main-your-username.vercel.app" // Replace with your actual Vercel preview domain
-  ], 
+    "https://uiforge.vercel.app", // Replace with your actual Vercel domain
+    "https://uiforge-git-main-pateljashn.vercel.app", // Replace with your actual Vercel preview domain
+    process.env.FRONTEND_URL // Allow environment variable override
+  ].filter(Boolean), 
   credentials: true 
 }));
 app.use(express.json());
