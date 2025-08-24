@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Search, Sun, Moon, Grid, List as ListIcon } from "lucide-react";
+import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Sun, Moon, Trash2 } from "lucide-react";
 import "./browse.css";
 import UIUploadModal from "../../../components/UIUploadModal";
 import UIComponentCard from "../../../components/UIComponentCard";
@@ -9,9 +9,11 @@ const UIGallery = () => {
   const [components, setComponents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [viewMode, setViewMode] = useState("grid");
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedComponents, setSelectedComponents] = useState(new Set());
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState("");
 
   const categories = [
     { name: "All", icon: Book },
@@ -30,7 +32,7 @@ const UIGallery = () => {
 
   useEffect(() => {
     fetchComponents();
-  }, [selectedCategory, searchTerm]);
+  }, [selectedCategory]);
 
   const fetchComponents = async () => {
     try {
@@ -38,9 +40,6 @@ const UIGallery = () => {
       const params = new URLSearchParams();
       if (selectedCategory !== "All") {
         params.append("category", selectedCategory);
-      }
-      if (searchTerm) {
-        params.append("search", searchTerm);
       }
 
       const response = await fetch(`http://localhost:5002/api/ui-components?${params}`);
@@ -61,12 +60,77 @@ const UIGallery = () => {
     setComponents(prev => [newComponent, ...prev]);
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  const handleDeleteModeToggle = () => {
+    if (!isDeleteMode) {
+      setShowPasswordModal(true);
+    } else {
+      setIsDeleteMode(false);
+      setSelectedComponents(new Set());
+    }
   };
 
-  const toggleViewMode = () => {
-    setViewMode(viewMode === "grid" ? "list" : "grid");
+  const handlePasswordSubmit = () => {
+    if (password === "appleapple") {
+      setIsDeleteMode(true);
+      setShowPasswordModal(false);
+      setPassword("");
+    } else {
+      alert("Incorrect password!");
+      setPassword("");
+    }
+  };
+
+  const handleComponentSelect = (componentId) => {
+    if (!isDeleteMode) return;
+    
+    const newSelected = new Set(selectedComponents);
+    if (newSelected.has(componentId)) {
+      newSelected.delete(componentId);
+    } else {
+      newSelected.add(componentId);
+    }
+    setSelectedComponents(newSelected);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedComponents.size === 0) {
+      alert("Please select components to delete");
+      return;
+    }
+
+    if (window.confirm(`Are you sure you want to delete ${selectedComponents.size} component(s)?`)) {
+      try {
+        const deletePromises = Array.from(selectedComponents).map(async (componentId) => {
+          const response = await fetch(`http://localhost:5002/api/ui-components/${componentId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          return response.ok ? componentId : null;
+        });
+
+        const deletedIds = await Promise.all(deletePromises);
+        const successfulDeletes = deletedIds.filter(id => id !== null);
+
+        if (successfulDeletes.length > 0) {
+          setComponents(prev => prev.filter(component => 
+            !successfulDeletes.includes(component._id || component.id)
+          ));
+          alert(`Successfully deleted ${successfulDeletes.length} component(s)`);
+        }
+
+        setIsDeleteMode(false);
+        setSelectedComponents(new Set());
+      } catch (error) {
+        console.error('Error deleting components:', error);
+        alert('Error deleting components: ' + error.message);
+      }
+    }
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   return (
@@ -104,34 +168,6 @@ const UIGallery = () => {
           </div>
           
           <div className="main-actions">
-            <div className="search-container">
-              <Search size={18} />
-              <input
-                type="text"
-                placeholder="Search components..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
-            </div>
-            
-            <div className="view-controls">
-              <button 
-                className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                onClick={() => setViewMode('grid')}
-                title="Grid View"
-              >
-                <Grid size={18} />
-              </button>
-              <button 
-                className={`view-mode-btn ${viewMode === 'list' ? 'active' : ''}`}
-                onClick={() => setViewMode('list')}
-                title="List View"
-              >
-                <ListIcon size={18} />
-              </button>
-            </div>
-            
             <button 
               className="upload-button"
               onClick={() => setShowUploadModal(true)}
@@ -139,6 +175,24 @@ const UIGallery = () => {
               <Plus size={18} />
               Upload
             </button>
+
+            <button 
+              className={`delete-mode-button ${isDeleteMode ? 'active' : ''}`}
+              onClick={handleDeleteModeToggle}
+            >
+              <Trash2 size={18} />
+              {isDeleteMode ? 'Cancel' : 'Delete'}
+            </button>
+
+            {isDeleteMode && selectedComponents.size > 0 && (
+              <button 
+                className="delete-selected-button"
+                onClick={handleDeleteSelected}
+              >
+                <Trash2 size={18} />
+                Delete ({selectedComponents.size})
+              </button>
+            )}
           </div>
         </div>
 
@@ -160,14 +214,28 @@ const UIGallery = () => {
             </button>
           </div>
         ) : (
-          <div className={`components-container ${viewMode}-view`}>
+          <div className="components-container grid-view">
             {components.map((component) => (
-              <UIComponentCard
+              <div 
                 key={component._id || component.id}
-                component={component}
-                viewMode={viewMode}
-                theme={isDarkMode ? 'dark' : 'light'}
-              />
+                className={`component-wrapper ${isDeleteMode ? 'delete-mode' : ''} ${selectedComponents.has(component._id || component.id) ? 'selected' : ''}`}
+                onClick={() => handleComponentSelect(component._id || component.id)}
+              >
+                <UIComponentCard
+                  component={component}
+                  theme={isDarkMode ? 'dark' : 'light'}
+                  isDeleteMode={isDeleteMode}
+                />
+                {isDeleteMode && (
+                  <div className="selection-overlay">
+                    <div className="selection-checkbox">
+                      {selectedComponents.has(component._id || component.id) && (
+                        <CheckSquare size={20} />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -178,6 +246,49 @@ const UIGallery = () => {
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
       />
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="password-modal-overlay">
+          <div className="password-modal">
+            <h3>Enter Password</h3>
+            <p>Please enter the password to enable delete mode</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              className="password-input"
+              autoComplete="off"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handlePasswordSubmit();
+                }
+              }}
+            />
+            <div className="password-modal-actions">
+              <button 
+                type="button"
+                className="cancel-button"
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setPassword("");
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button"
+                className="submit-button"
+                onClick={handlePasswordSubmit}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

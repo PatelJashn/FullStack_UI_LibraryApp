@@ -56,87 +56,33 @@
   --shadow-hover: var(--light-shadow-hover);
 }
 
+/* Main Card Styles */
 .ui-component-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .ui-component-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--accent);
 }
 
-/* Card Header */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--card-border);
-  background: var(--card-header-bg);
-}
-
-.card-title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.card-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.action-btn {
+/* Component Preview */
+.component-preview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #313030;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 8px;
-  background: var(--btn-bg);
-  color: var(--btn-text);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.action-btn:hover {
-  background: var(--btn-hover-bg);
-  transform: scale(1.05);
-}
-
-.download-btn {
-  background: var(--download-btn-bg);
-  color: var(--download-btn-text);
-}
-
-.download-btn:hover {
-  background: var(--download-btn-hover-bg);
-}
-
-.preview-btn {
-  background: var(--preview-btn-bg);
-  color: var(--preview-btn-text);
-}
-
-.preview-btn:hover {
-  background: var(--preview-btn-hover-bg);
-}
-
-/* Card Preview */
-.card-preview {
-  padding: 0;
-}
-
-.preview-content {
-  width: 100%;
-  height: 300px;
   overflow: hidden;
 }
 
@@ -144,101 +90,67 @@
   width: 100%;
   height: 100%;
   border: none;
-  background: white;
+  background: #313030;
+  display: block;
+  pointer-events: none;
 }
 
 /* Grid View */
 .grid-view .ui-component-card {
-  width: 100%;
-  max-width: 400px;
+  aspect-ratio: 4/5.25; /* Changed from 4/3 to 4/5.25 (75% longer) */
+  min-height: 350px; /* Increased from 200px to 350px */
+  max-height: 525px; /* Increased from 300px to 525px */
 }
 
 /* List View */
 .list-view .ui-component-card {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
+  aspect-ratio: 16/7; /* Changed from 16/4 to 16/7 (75% longer) */
+  min-height: 210px; /* Increased from 120px to 210px */
+  max-height: 262px; /* Increased from 150px to 262px */
 }
 
-.list-view .card-header {
-  width: 200px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--card-border);
-  border-bottom: none;
+/* Theme-specific styles */
+.dark-theme .ui-component-card {
+  background: #1a1a1a;
+  border-color: #333;
 }
 
-.list-view .card-preview {
-  flex: 1;
-  height: 200px;
+.dark-theme .ui-component-card:hover {
+  border-color: #8a6eff;
+  box-shadow: 0 20px 25px -5px rgba(138, 110, 255, 0.1), 0 10px 10px -5px rgba(138, 110, 255, 0.04);
 }
 
-.list-view .preview-content {
-  height: 200px;
+.light-theme .ui-component-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
 }
 
-/* Theme Variables */
-.dark-theme {
-  --card-bg: #1a1a1a;
-  --card-border: #333;
-  --card-header-bg: #222;
-  --text-primary: #ffffff;
-  --btn-bg: #333;
-  --btn-text: #ffffff;
-  --btn-hover-bg: #444;
-  --download-btn-bg: #2563eb;
-  --download-btn-text: #ffffff;
-  --download-btn-hover-bg: #1d4ed8;
-  --preview-btn-bg: #059669;
-  --preview-btn-text: #ffffff;
-  --preview-btn-hover-bg: #047857;
-}
-
-.light-theme {
-  --card-bg: #ffffff;
-  --card-border: #e5e7eb;
-  --card-header-bg: #f9fafb;
-  --text-primary: #111827;
-  --btn-bg: #f3f4f6;
-  --btn-text: #374151;
-  --btn-hover-bg: #e5e7eb;
-  --download-btn-bg: #3b82f6;
-  --download-btn-text: #ffffff;
-  --download-btn-hover-bg: #2563eb;
-  --preview-btn-bg: #10b981;
-  --preview-btn-text: #ffffff;
-  --preview-btn-hover-bg: #059669;
+.light-theme .ui-component-card:hover {
+  border-color: #6b47b6;
+  box-shadow: 0 20px 25px -5px rgba(107, 71, 182, 0.1), 0 10px 10px -5px rgba(107, 71, 182, 0.04);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .grid-view .ui-component-card {
+    aspect-ratio: 3/3.9; /* Changed from 3/2 to 3/3.9 (75% longer) */
+    min-height: 315px; /* Increased from 180px to 315px */
+  }
+  
   .list-view .ui-component-card {
-    flex-direction: column;
+    aspect-ratio: 3/2.625; /* Changed from 3/1 to 3/2.625 (75% longer) */
+    min-height: 175px; /* Increased from 100px to 175px */
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-view .ui-component-card {
+    aspect-ratio: 1/1.75; /* Changed from 1/1 to 1/1.75 (75% longer) */
+    min-height: 350px; /* Increased from 200px to 350px */
   }
   
-  .list-view .card-header {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--card-border);
-  }
-  
-  .list-view .card-preview {
-    height: 250px;
-  }
-  
-  .list-view .preview-content {
-    height: 250px;
-  }
-  
-  .card-header {
-    padding: 12px 16px;
-  }
-  
-  .card-title {
-    font-size: 1rem;
-  }
-  
-  .action-btn {
-    width: 32px;
-    height: 32px;
+  .list-view .ui-component-card {
+    aspect-ratio: 2/1.75; /* Changed from 2/1 to 2/1.75 (75% longer) */
+    min-height: 210px; /* Increased from 120px to 210px */
   }
 } 

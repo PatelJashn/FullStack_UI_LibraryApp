@@ -122,6 +122,13 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // Validate code structure
+    if (!code.html || !code.css) {
+      return res.status(400).json({ 
+        message: "HTML and CSS code are required" 
+      });
+    }
+
     const newComponent = {
       id: componentIdCounter.toString(),
       title,
@@ -152,13 +159,16 @@ router.post("/", async (req, res) => {
         author: authorId || "507f1f77bcf86cd799439011" // Placeholder
       });
       await mongoComponent.save();
+      console.log(`✅ New UI component saved to MongoDB: ${title}`);
+    } else {
+      console.log(`✅ New UI component saved locally: ${title}`);
     }
 
     console.log(`✅ New UI component created: ${title}`);
     res.status(201).json(newComponent);
   } catch (error) {
     console.error("Error creating component:", error);
-    res.status(400).json({ message: "Error creating component", error: error.message });
+    res.status(500).json({ message: "Error creating component", error: error.message });
   }
 });
 

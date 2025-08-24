@@ -4,6 +4,7 @@ import Footer from "./components/footer/Footer";
 import Homepagefinal from "./pages/homepage/Homepagefinal";
 import Login from "./pages/loginpage/Login";
 import Browserfinal from "./pages/categories/Browserfinal";
+import ComponentDetail from "./pages/component-detail/ComponentDetail";
 import Signup from "./pages/signuppage/signup.jsx"; // Fixed capitalization
 import { AuthProvider } from "./components/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/categories" element={
             <Browserfinal />
           } />
+          <Route path="/component/:id" element={<ComponentDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
