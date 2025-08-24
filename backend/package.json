@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build": "echo 'Nothing to build'"
+
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
