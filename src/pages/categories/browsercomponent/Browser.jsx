@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Sun, Moon, Trash2, FileText } from "lucide-react";
+import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Trash2, FileText } from "lucide-react";
 import "./browse.css";
 import UIUploadModal from "../../../components/UIUploadModal";
 import UIComponentCard from "../../../components/UIComponentCard";
@@ -162,9 +162,7 @@ const UIGallery = () => {
     }
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+
 
   return (
     <div className={`ui-container ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
@@ -172,13 +170,6 @@ const UIGallery = () => {
       <aside className="sidebar">
         <div className="sidebar-header">
           <h2 className="sidebar-title">Categories</h2>
-          <button 
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
         </div>
         
         {categories.map(({ name, icon: Icon }) => (

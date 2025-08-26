@@ -15,13 +15,14 @@ const CommunitySection = () => {
     <div
       style={{
         backgroundColor: isDarkMode ? "#0b0b0b" : "#FAF9F6",
-        padding: "80px 20px",
+        padding: window.innerWidth <= 768 ? "40px 15px" : "80px 20px",
         color: isDarkMode ? "white" : "#2d3748",
         display: "flex",
         justifyContent: "center",
-        gap: "30px",
+        gap: window.innerWidth <= 768 ? "20px" : "30px",
         flexWrap: "wrap",
         borderTop: isDarkMode ? "none" : "2px solid #000000",
+        flexDirection: window.innerWidth <= 768 ? "column" : "row",
       }}
     >
       {/* Community Leaderboard */}
@@ -31,23 +32,27 @@ const CommunitySection = () => {
         transition={{ duration: 0.6 }}
         style={{
           background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "#FAF9F6",
-          padding: "40px",
+          padding: window.innerWidth <= 768 ? "25px 20px" : "40px",
           borderRadius: "15px",
-          width: "400px",
+          width: window.innerWidth <= 768 ? "100%" : "400px",
           boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
           border: isDarkMode ? "none" : "2px solid #000000",
         }}
       >
         <h2
           style={{
-            fontSize: "24px",
+            fontSize: window.innerWidth <= 768 ? "20px" : "24px",
             fontWeight: "bold",
             color: isDarkMode ? "#bbb" : "#2d3748",
           }}
         >
           🏆 Community Leaderboard
         </h2>
-        <p style={{ color: isDarkMode ? "#888" : "#666666", fontSize: "14px", marginBottom: "15px" }}>Top contributors in the community</p>
+        <p style={{ 
+          color: isDarkMode ? "#888" : "#666666", 
+          fontSize: window.innerWidth <= 768 ? "12px" : "14px", 
+          marginBottom: "15px" 
+        }}>Top contributors in the community</p>
         <div>
           {leaderboard.map((user) => (
             <motion.div
@@ -57,9 +62,9 @@ const CommunitySection = () => {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
+                gap: window.innerWidth <= 768 ? "8px" : "10px",
                 background: isDarkMode ? "#1b1b1b" : "#FAF9F6",
-                padding: "12px",
+                padding: window.innerWidth <= 768 ? "10px" : "12px",
                 borderRadius: "8px",
                 marginBottom: "10px",
                 boxShadow: isDarkMode ? "0px 2px 10px rgba(0, 0, 0, 0.3)" : "0px 2px 8px rgba(0, 0, 0, 0.06)",
@@ -71,14 +76,21 @@ const CommunitySection = () => {
                 alt={user.name}
                 style={{ 
                   borderRadius: "50%", 
-                  width: "40px", 
-                  height: "40px", 
+                  width: window.innerWidth <= 768 ? "35px" : "40px", 
+                  height: window.innerWidth <= 768 ? "35px" : "40px", 
                   border: isDarkMode ? "2px solid #444" : "2px solid #000000" 
                 }}
               />
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#2d3748" }}>{user.name}</h3>
-                <p style={{ color: isDarkMode ? "#aaa" : "#666666", fontSize: "12px" }}>Contributions: {user.contributions}</p>
+                <h3 style={{ 
+                  fontSize: window.innerWidth <= 768 ? "14px" : "16px", 
+                  fontWeight: "bold", 
+                  color: isDarkMode ? "#ddd" : "#2d3748" 
+                }}>{user.name}</h3>
+                <p style={{ 
+                  color: isDarkMode ? "#aaa" : "#666666", 
+                  fontSize: window.innerWidth <= 768 ? "11px" : "12px" 
+                }}>Contributions: {user.contributions}</p>
               </div>
             </motion.div>
           ))}
@@ -90,8 +102,8 @@ const CommunitySection = () => {
             background: isDarkMode ? "#222" : "#1e40af",
             color: isDarkMode ? "#ddd" : "white",
             border: isDarkMode ? "1px solid #444" : "1px solid #1e40af",
-            padding: "10px 20px",
-            fontSize: "14px",
+            padding: window.innerWidth <= 768 ? "8px 16px" : "10px 20px",
+            fontSize: window.innerWidth <= 768 ? "12px" : "14px",
             borderRadius: "6px",
             cursor: "pointer",
             fontWeight: "bold",
@@ -109,9 +121,9 @@ const CommunitySection = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         style={{
           background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "#FAF9F6",
-          padding: "40px",
+          padding: window.innerWidth <= 768 ? "25px 20px" : "40px",
           borderRadius: "15px",
-          width: "400px",
+          width: window.innerWidth <= 768 ? "100%" : "400px",
           boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
           display: "flex",
           flexDirection: "column",
@@ -121,13 +133,23 @@ const CommunitySection = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
-          <span style={{ color: "limegreen", fontSize: "14px", marginRight: "5px" }}>●</span>
-          <span style={{ color: "limegreen", fontSize: "14px" }}>376 online</span>
+          <span style={{ color: "limegreen", fontSize: window.innerWidth <= 768 ? "12px" : "14px", marginRight: "5px" }}>●</span>
+          <span style={{ color: "limegreen", fontSize: window.innerWidth <= 768 ? "12px" : "14px" }}>376 online</span>
         </div>
-        <h2 style={{ fontSize: "22px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#2d3748", textAlign: "center" }}>
+        <h2 style={{ 
+          fontSize: window.innerWidth <= 768 ? "18px" : "22px", 
+          fontWeight: "bold", 
+          color: isDarkMode ? "#ddd" : "#2d3748", 
+          textAlign: "center" 
+        }}>
           Join the Discord community!
         </h2>
-        <p style={{ color: isDarkMode ? "#888" : "#666666", fontSize: "14px", textAlign: "center", marginBottom: "15px" }}>
+        <p style={{ 
+          color: isDarkMode ? "#888" : "#666666", 
+          fontSize: window.innerWidth <= 768 ? "12px" : "14px", 
+          textAlign: "center", 
+          marginBottom: "15px" 
+        }}>
           An open space for UI designers and developers
         </p>
         <motion.button
@@ -137,18 +159,18 @@ const CommunitySection = () => {
             background: isDarkMode ? "#333" : "#1e40af",
             color: isDarkMode ? "#ddd" : "white",
             border: isDarkMode ? "1px solid #444" : "1px solid #1e40af",
-            padding: "12px 24px",
-            fontSize: "14px",
+            padding: window.innerWidth <= 768 ? "10px 20px" : "12px 24px",
+            fontSize: window.innerWidth <= 768 ? "12px" : "14px",
             borderRadius: "6px",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: "10px",
+            gap: window.innerWidth <= 768 ? "8px" : "10px",
             fontWeight: "bold",
           }}
           onClick={() => window.open('https://discord.gg/your-discord-invite', '_blank')}
         >
-          <span style={{ fontSize: "20px" }}>💬</span> Join Discord
+          <span style={{ fontSize: window.innerWidth <= 768 ? "16px" : "20px" }}>💬</span> Join Discord
         </motion.button>
       </motion.div>
     </div>
