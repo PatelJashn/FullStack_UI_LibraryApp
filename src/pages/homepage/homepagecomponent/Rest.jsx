@@ -18,7 +18,7 @@ const BrowseAndAddSection = () => {
 
   const containerStyle = {
     backgroundColor: isDarkMode ? "#111" : "#FAF9F6",
-    color: isDarkMode ? "white" : "#333333",
+    color: isDarkMode ? "white" : "#2d3748",
     padding: "60px 20px",
     textAlign: "center",
     overflow: "hidden",
@@ -60,7 +60,7 @@ const BrowseAndAddSection = () => {
     padding: "10px 18px",
     borderRadius: "8px",
     fontSize: "14px",
-    color: isDarkMode ? "#ccc" : "#333333",
+    color: isDarkMode ? "#ccc" : "#2d3748",
     cursor: "pointer",
     transition: "0.3s ease",
     border: isDarkMode ? "none" : "2px solid #000000",
@@ -136,8 +136,8 @@ const BrowseAndAddSection = () => {
                   ? (isDarkMode ? "#444" : "#f3f4f6") 
                   : (isDarkMode ? "#222" : "#FAF9F6"),
                 color: hoveredTag === index 
-                  ? (isDarkMode ? "#fff" : "#1a1a1a") 
-                  : (isDarkMode ? "#ccc" : "#333333"),
+                  ? (isDarkMode ? "#fff" : "#2d3748") 
+                  : (isDarkMode ? "#ccc" : "#2d3748"),
                 transform: hoveredTag === index ? "scale(1.1)" : "scale(1)",
                 border: hoveredTag === index 
                   ? (isDarkMode ? "none" : "2px solid #1e40af") 

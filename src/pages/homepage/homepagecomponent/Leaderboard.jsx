@@ -16,7 +16,7 @@ const CommunitySection = () => {
       style={{
         backgroundColor: isDarkMode ? "#0b0b0b" : "#FAF9F6",
         padding: "80px 20px",
-        color: isDarkMode ? "white" : "#333333",
+        color: isDarkMode ? "white" : "#2d3748",
         display: "flex",
         justifyContent: "center",
         gap: "30px",
@@ -42,7 +42,7 @@ const CommunitySection = () => {
           style={{
             fontSize: "24px",
             fontWeight: "bold",
-            color: isDarkMode ? "#bbb" : "#1a1a1a",
+            color: isDarkMode ? "#bbb" : "#2d3748",
           }}
         >
           🏆 Community Leaderboard
@@ -77,7 +77,7 @@ const CommunitySection = () => {
                 }}
               />
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#333333" }}>{user.name}</h3>
+                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#2d3748" }}>{user.name}</h3>
                 <p style={{ color: isDarkMode ? "#aaa" : "#666666", fontSize: "12px" }}>Contributions: {user.contributions}</p>
               </div>
             </motion.div>
@@ -124,7 +124,7 @@ const CommunitySection = () => {
           <span style={{ color: "limegreen", fontSize: "14px", marginRight: "5px" }}>●</span>
           <span style={{ color: "limegreen", fontSize: "14px" }}>376 online</span>
         </div>
-        <h2 style={{ fontSize: "22px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#1a1a1a", textAlign: "center" }}>
+        <h2 style={{ fontSize: "22px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#2d3748", textAlign: "center" }}>
           Join the Discord community!
         </h2>
         <p style={{ color: isDarkMode ? "#888" : "#666666", fontSize: "14px", textAlign: "center", marginBottom: "15px" }}>

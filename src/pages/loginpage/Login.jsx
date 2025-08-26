@@ -32,7 +32,7 @@ const Login = () => {
       border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.2)" : "2px solid #000000",
       width: "400px",
       textAlign: "center",
-      color: isDarkMode ? "white" : "#333333",
+      color: isDarkMode ? "white" : "#2d3748",
     },
     title: {
       fontSize: "26px",
@@ -40,7 +40,7 @@ const Login = () => {
       marginBottom: "20px",
       letterSpacing: "1px",
       textShadow: isDarkMode ? "0px 0px 10px rgba(255, 255, 255, 0.3)" : "none",
-      color: isDarkMode ? "white" : "#1a1a1a",
+      color: isDarkMode ? "white" : "#2d3748",
     },
     inputGroup: {
       textAlign: "left",
@@ -60,8 +60,8 @@ const Login = () => {
       border: "none",
       borderRadius: "6px",
       fontSize: "16px",
-      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "#f8f9fa",
-      color: isDarkMode ? "white" : "#333333",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "#FAF9F6",
+      color: isDarkMode ? "white" : "#2d3748",
       outline: "none",
       transition: "0.3s",
       boxShadow: isDarkMode ? "inset 0px 0px 8px rgba(255, 255, 255, 0.1)" : "inset 0px 0px 8px rgba(0, 0, 0, 0.05)",
