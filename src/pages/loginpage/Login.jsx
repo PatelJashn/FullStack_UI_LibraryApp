@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
+import { useTheme } from "../../components/ThemeContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { isDarkMode } = useTheme();
 
   const styles = {
     container: {
@@ -17,27 +19,28 @@ const Login = () => {
       justifyContent: "center",
       alignItems: "center",
       height: "100vh",
-      background: "linear-gradient(135deg, #0f0f0f, #1c1c1c)",
+      background: isDarkMode ? "linear-gradient(135deg, #0f0f0f, #1c1c1c)" : "linear-gradient(135deg, #FAF9F6, #e9ecef)",
       fontFamily: "Arial, sans-serif",
     },
     glassBox: {
-      background: "rgba(255, 255, 255, 0.1)",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#FAF9F6",
       padding: "40px",
       borderRadius: "12px",
-      backdropFilter: "blur(12px)",
-      WebkitBackdropFilter: "blur(12px)",
-      boxShadow: "0px 0px 15px rgba(255, 255, 255, 0.1)",
-      border: "1px solid rgba(255, 255, 255, 0.2)",
+      backdropFilter: isDarkMode ? "blur(12px)" : "none",
+      WebkitBackdropFilter: isDarkMode ? "blur(12px)" : "none",
+      boxShadow: isDarkMode ? "0px 0px 15px rgba(255, 255, 255, 0.1)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
+      border: isDarkMode ? "1px solid rgba(255, 255, 255, 0.2)" : "2px solid #000000",
       width: "400px",
       textAlign: "center",
-      color: "white",
+      color: isDarkMode ? "white" : "#333333",
     },
     title: {
       fontSize: "26px",
       fontWeight: "bold",
       marginBottom: "20px",
       letterSpacing: "1px",
-      textShadow: "0px 0px 10px rgba(255, 255, 255, 0.3)",
+      textShadow: isDarkMode ? "0px 0px 10px rgba(255, 255, 255, 0.3)" : "none",
+      color: isDarkMode ? "white" : "#1a1a1a",
     },
     inputGroup: {
       textAlign: "left",
@@ -49,7 +52,7 @@ const Login = () => {
       fontSize: "14px",
       fontWeight: "bold",
       marginBottom: "6px",
-      color: "#aaa",
+      color: isDarkMode ? "#aaa" : "#666666",
     },
     input: {
       width: "100%",
@@ -57,11 +60,12 @@ const Login = () => {
       border: "none",
       borderRadius: "6px",
       fontSize: "16px",
-      background: "rgba(255, 255, 255, 0.2)",
-      color: "white",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "#f8f9fa",
+      color: isDarkMode ? "white" : "#333333",
       outline: "none",
       transition: "0.3s",
-      boxShadow: "inset 0px 0px 8px rgba(255, 255, 255, 0.1)",
+      boxShadow: isDarkMode ? "inset 0px 0px 8px rgba(255, 255, 255, 0.1)" : "inset 0px 0px 8px rgba(0, 0, 0, 0.05)",
+      border: isDarkMode ? "none" : "1px solid #d1d5db",
     },
     eyeButton: {
       position: "absolute",
@@ -72,7 +76,7 @@ const Login = () => {
       border: "none",
       cursor: "pointer",
       fontSize: "20px",
-      color: "#bbb",
+      color: isDarkMode ? "#bbb" : "#666666",
       transition: "0.3s",
       display: "flex",
       justifyContent: "center",
@@ -82,12 +86,12 @@ const Login = () => {
       borderRadius: "50%",
     },
     eyeButtonHover: {
-      background: "rgba(255, 255, 255, 0.2)",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.05)",
     },
     button: {
       width: "100%",
       padding: "12px",
-      background: "linear-gradient(135deg, #6b47b6, #8a6eff)",
+      background: isDarkMode ? "linear-gradient(135deg, #6b47b6, #8a6eff)" : "#1e40af",
       color: "white",
       border: "none",
       borderRadius: "6px",
@@ -95,12 +99,12 @@ const Login = () => {
       fontSize: "16px",
       fontWeight: "bold",
       transition: "0.3s",
-      textShadow: "0px 0px 5px rgba(255, 255, 255, 0.3)",
+      textShadow: isDarkMode ? "0px 0px 5px rgba(255, 255, 255, 0.3)" : "none",
     },
     buttonDisabled: {
       width: "100%",
       padding: "12px",
-      background: "rgba(107, 71, 182, 0.5)",
+      background: isDarkMode ? "rgba(107, 71, 182, 0.5)" : "rgba(30, 64, 175, 0.5)",
       color: "rgba(255, 255, 255, 0.7)",
       border: "none",
       borderRadius: "6px",
@@ -112,10 +116,10 @@ const Login = () => {
     signupText: {
       marginTop: "15px",
       fontSize: "14px",
-      color: "#bbb",
+      color: isDarkMode ? "#bbb" : "#666666",
     },
     link: {
-      color: "#8a6eff",
+      color: isDarkMode ? "#8a6eff" : "#1e40af",
       textDecoration: "none",
       fontWeight: "bold",
     },
@@ -124,7 +128,7 @@ const Login = () => {
       fontSize: "14px",
       marginBottom: "15px",
       padding: "10px",
-      background: "rgba(255, 107, 107, 0.1)",
+      background: isDarkMode ? "rgba(255, 107, 107, 0.1)" : "rgba(255, 107, 107, 0.05)",
       borderRadius: "6px",
       border: "1px solid rgba(255, 107, 107, 0.3)",
     },
@@ -133,7 +137,7 @@ const Login = () => {
       fontSize: "14px",
       marginBottom: "15px",
       padding: "10px",
-      background: "rgba(81, 207, 102, 0.1)",
+      background: isDarkMode ? "rgba(81, 207, 102, 0.1)" : "rgba(81, 207, 102, 0.05)",
       borderRadius: "6px",
       border: "1px solid rgba(81, 207, 102, 0.3)",
     },

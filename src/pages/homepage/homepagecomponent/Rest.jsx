@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../../components/ThemeContext";
 
 const BrowseAndAddSection = () => {
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  
   const tags = [
     "button", "card", "form", "input", "label", "modal", "tooltip", "dropdown", "table", "checkbox",
     "radio", "switch", "avatar", "badge", "breadcrumb", "carousel", "pagination", "progress", "spinner", "tabs",
@@ -14,11 +17,13 @@ const BrowseAndAddSection = () => {
   const duplicatedTags = [...tags, ...tags, ...tags]; // Tripling for smooth transition
 
   const containerStyle = {
-    backgroundColor: "#111",
-    color: "white",
+    backgroundColor: isDarkMode ? "#111" : "#FAF9F6",
+    color: isDarkMode ? "white" : "#333333",
     padding: "60px 20px",
     textAlign: "center",
     overflow: "hidden",
+    borderTop: isDarkMode ? "none" : "2px solid #000000",
+    borderBottom: isDarkMode ? "none" : "2px solid #000000",
   };
 
   const statsSectionStyle = {
@@ -34,7 +39,7 @@ const BrowseAndAddSection = () => {
   };
 
   const statTextStyle = {
-    color: "#aaa",
+    color: isDarkMode ? "#aaa" : "#666666",
     fontSize: "14px",
   };
 
@@ -51,13 +56,15 @@ const BrowseAndAddSection = () => {
   };
 
   const tagStyle = {
-    background: "#222",
+    background: isDarkMode ? "#222" : "#FAF9F6",
     padding: "10px 18px",
     borderRadius: "8px",
     fontSize: "14px",
-    color: "#ccc",
+    color: isDarkMode ? "#ccc" : "#333333",
     cursor: "pointer",
     transition: "0.3s ease",
+    border: isDarkMode ? "none" : "2px solid #000000",
+    boxShadow: isDarkMode ? "none" : "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   const sectionWrapperStyle = {
@@ -68,18 +75,19 @@ const BrowseAndAddSection = () => {
   };
 
   const boxStyle = {
-    background: "linear-gradient(135deg, #222, #333)",
+    background: isDarkMode ? "linear-gradient(135deg, #222, #333)" : "#FAF9F6",
     padding: "40px",
     borderRadius: "12px",
     textAlign: "center",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+    boxShadow: isDarkMode ? "0px 4px 10px rgba(0, 0, 0, 0.3)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
     transition: "transform 0.3s ease-in-out",
     flex: "1",
     minWidth: "250px",
+    border: isDarkMode ? "none" : "2px solid #000000",
   };
 
   const buttonStyle = {
-    background: "#282928",
+    background: isDarkMode ? "#282928" : "#1e40af",
     color: "white",
     border: "none",
     padding: "12px 24px",
@@ -87,7 +95,6 @@ const BrowseAndAddSection = () => {
     borderRadius: "8px",
     cursor: "pointer",
     transition: "0.3s ease",
-    border: "1px solid white",
   };
 
   const [hoveredTag, setHoveredTag] = useState(null);
@@ -125,9 +132,19 @@ const BrowseAndAddSection = () => {
               key={index}
               style={{
                 ...tagStyle,
-                background: hoveredTag === index ? "#444" : "#222",
-                color: hoveredTag === index ? "#fff" : "#ccc",
+                background: hoveredTag === index 
+                  ? (isDarkMode ? "#444" : "#f3f4f6") 
+                  : (isDarkMode ? "#222" : "#FAF9F6"),
+                color: hoveredTag === index 
+                  ? (isDarkMode ? "#fff" : "#1a1a1a") 
+                  : (isDarkMode ? "#ccc" : "#333333"),
                 transform: hoveredTag === index ? "scale(1.1)" : "scale(1)",
+                border: hoveredTag === index 
+                  ? (isDarkMode ? "none" : "2px solid #1e40af") 
+                  : (isDarkMode ? "none" : "2px solid #000000"),
+                boxShadow: hoveredTag === index 
+                  ? (isDarkMode ? "none" : "0 4px 12px rgba(30, 64, 175, 0.2)") 
+                  : (isDarkMode ? "none" : "0 2px 4px rgba(0, 0, 0, 0.1)"),
               }}
               onMouseEnter={() => setHoveredTag(index)}
               onMouseLeave={() => setHoveredTag(null)}
@@ -143,16 +160,16 @@ const BrowseAndAddSection = () => {
         {/* ADD YOUR OWN UI */}
         <div style={boxStyle}>
           <h2>🚀 ADD YOUR OWN UI</h2>
-          <p style={{ color: "#bbb", fontSize: "16px", marginBottom: "20px" }}>
+          <p style={{ color: isDarkMode ? "#bbb" : "#666666", fontSize: "16px", marginBottom: "20px" }}>
             Contribute your UI elements & showcase your creativity!
           </p>
           <button
             style={{
               ...buttonStyle,
-              background: "#282928",
+              background: isDarkMode ? "#282928" : "#1e40af",
             }}
-            onMouseEnter={(e) => (e.target.style.background = "#3a3b3a")}
-            onMouseLeave={(e) => (e.target.style.background = "#282928")}
+            onMouseEnter={(e) => (e.target.style.background = isDarkMode ? "#3a3b3a" : "#1e3a8a")}
+            onMouseLeave={(e) => (e.target.style.background = isDarkMode ? "#282928" : "#1e40af")}
             onClick={() => navigate('/upload')}
           >
             Add UI
@@ -162,16 +179,16 @@ const BrowseAndAddSection = () => {
         {/* BROWSE ALL CATEGORIES */}
         <div style={boxStyle}>
           <h2>📂 BROWSE ALL CATEGORIES</h2>
-          <p style={{ color: "#bbb", fontSize: "16px", marginBottom: "20px" }}>
+          <p style={{ color: isDarkMode ? "#bbb" : "#666666", fontSize: "16px", marginBottom: "20px" }}>
             Discover a wide range of UI elements from various categories.
           </p>
           <button
             style={{
               ...buttonStyle,
-              background: "#282928",
+              background: isDarkMode ? "#282928" : "#1e40af",
             }}
-            onMouseEnter={(e) => (e.target.style.background = "#3a3b3a")}
-            onMouseLeave={(e) => (e.target.style.background = "#282928")}
+            onMouseEnter={(e) => (e.target.style.background = isDarkMode ? "#3a3b3a" : "#1e3a8a")}
+            onMouseLeave={(e) => (e.target.style.background = isDarkMode ? "#282928" : "#1e40af")}
             onClick={() => navigate('/categories')}
           >
             Explore Now

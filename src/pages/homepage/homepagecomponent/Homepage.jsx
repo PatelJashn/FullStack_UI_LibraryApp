@@ -10,15 +10,16 @@ const Part = () => {
     paddingLeft: "360px",
     paddingTop: "70px",
     paddingBottom: "70px",
-    backgroundColor: isDarkMode ? "rgb(30, 28, 28)" : "#ffffff",
+    backgroundColor: isDarkMode ? "rgb(30, 28, 28)" : "#FAF9F6",
     fontFamily: "Arial, Helvetica, sans-serif",
     color: isDarkMode ? "aliceblue" : "#333333",
+    borderBottom: isDarkMode ? "none" : "2px solid #000000",
   };
 
   const paragraphStyle = {
     fontSize: "16px",
     textAlign: "justify",
-    color: isDarkMode ? "rgba(17, 233, 17, 0.768)" : "#2563eb",
+    color: isDarkMode ? "rgba(17, 233, 17, 0.768)" : "#1e40af",
     textDecoration: "underline",
   };
 
@@ -27,10 +28,11 @@ const Part = () => {
     alignItems: "center",
     marginTop: "60px",
     padding: "8px",
-    backgroundColor: "#e2e8f0",
+    backgroundColor: isDarkMode ? "#e2e8f0" : "#FAF9F6",
     borderRadius: "16px",
-    boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
+    boxShadow: isDarkMode ? "0 10px 15px rgba(0, 0, 0, 0.1)" : "0 4px 12px rgba(0, 0, 0, 0.08)",
     transition: "transform 0.2s ease-in-out",
+    border: isDarkMode ? "none" : "2px solid #000000",
   };
 
   const inputStyle = {
@@ -39,8 +41,8 @@ const Part = () => {
     fontSize: "20px",
     border: "none",
     borderRadius: "12px",
-    backgroundColor: "#f8fafc",
-    color: "#482d35",
+    backgroundColor: isDarkMode ? "#f8fafc" : "#FAF9F6",
+    color: isDarkMode ? "#482d35" : "#333333",
     outline: "none",
   };
 
@@ -52,7 +54,7 @@ const Part = () => {
   const iconStyle = {
     position: "absolute",
     marginLeft: "16px",
-    color: "#718096",
+    color: isDarkMode ? "#718096" : "#666666",
     pointerEvents: "none",
   };
 
@@ -62,7 +64,7 @@ const Part = () => {
     fontSize: "16px",
     fontWeight: "bold",
     color: "white",
-    backgroundColor: "#3e0859ce",
+    backgroundColor: isDarkMode ? "#3e0859ce" : "#1e40af",
     border: "none",
     borderRadius: "12px",
     cursor: "pointer",
@@ -70,7 +72,7 @@ const Part = () => {
   };
 
   const buttonHoverStyle = {
-    backgroundColor: "#4c51bf",
+    backgroundColor: isDarkMode ? "#4c51bf" : "#1e3a8a",
   };
 
   return (
@@ -92,7 +94,7 @@ const Part = () => {
           height="24px"
           viewBox="0 -960 960 960"
           width="24px"
-          fill="#000000"
+          fill={isDarkMode ? "#000000" : "#666666"}
           style={iconStyle}
         >
           <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
@@ -101,7 +103,7 @@ const Part = () => {
           type="submit"
           style={buttonStyle}
           onMouseOver={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-          onMouseOut={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
         >
           Search
         </button>

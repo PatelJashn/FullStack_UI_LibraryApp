@@ -14,13 +14,14 @@ const CommunitySection = () => {
   return (
     <div
       style={{
-        backgroundColor: isDarkMode ? "#0b0b0b" : "#ffffff",
+        backgroundColor: isDarkMode ? "#0b0b0b" : "#FAF9F6",
         padding: "80px 20px",
         color: isDarkMode ? "white" : "#333333",
         display: "flex",
         justifyContent: "center",
         gap: "30px",
         flexWrap: "wrap",
+        borderTop: isDarkMode ? "none" : "2px solid #000000",
       }}
     >
       {/* Community Leaderboard */}
@@ -29,11 +30,12 @@ const CommunitySection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         style={{
-          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "#FAF9F6",
           padding: "40px",
           borderRadius: "15px",
           width: "400px",
-          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
+          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
+          border: isDarkMode ? "none" : "2px solid #000000",
         }}
       >
         <h2
@@ -56,12 +58,12 @@ const CommunitySection = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                background: isDarkMode ? "#1b1b1b" : "#ffffff",
+                background: isDarkMode ? "#1b1b1b" : "#FAF9F6",
                 padding: "12px",
                 borderRadius: "8px",
                 marginBottom: "10px",
-                boxShadow: isDarkMode ? "0px 2px 10px rgba(0, 0, 0, 0.3)" : "0px 2px 10px rgba(0, 0, 0, 0.1)",
-                border: isDarkMode ? "none" : "1px solid #e5e7eb",
+                boxShadow: isDarkMode ? "0px 2px 10px rgba(0, 0, 0, 0.3)" : "0px 2px 8px rgba(0, 0, 0, 0.06)",
+                border: isDarkMode ? "none" : "1px solid #000000",
               }}
             >
               <img
@@ -71,7 +73,7 @@ const CommunitySection = () => {
                   borderRadius: "50%", 
                   width: "40px", 
                   height: "40px", 
-                  border: isDarkMode ? "2px solid #444" : "2px solid #d1d5db" 
+                  border: isDarkMode ? "2px solid #444" : "2px solid #000000" 
                 }}
               />
               <div>
@@ -82,12 +84,12 @@ const CommunitySection = () => {
           ))}
         </div>
         <motion.button
-          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(37, 99, 235, 0.3)" }}
+          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(30, 64, 175, 0.3)" }}
           transition={{ duration: 0.3 }}
           style={{
-            background: isDarkMode ? "#222" : "#2563eb",
+            background: isDarkMode ? "#222" : "#1e40af",
             color: isDarkMode ? "#ddd" : "white",
-            border: isDarkMode ? "1px solid #444" : "1px solid #2563eb",
+            border: isDarkMode ? "1px solid #444" : "1px solid #1e40af",
             padding: "10px 20px",
             fontSize: "14px",
             borderRadius: "6px",
@@ -106,15 +108,16 @@ const CommunitySection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         style={{
-          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "#FAF9F6",
           padding: "40px",
           borderRadius: "15px",
           width: "400px",
-          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
+          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.08)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          border: isDarkMode ? "none" : "2px solid #000000",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
@@ -128,12 +131,12 @@ const CommunitySection = () => {
           An open space for UI designers and developers
         </p>
         <motion.button
-          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(37, 99, 235, 0.3)" }}
+          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(30, 64, 175, 0.3)" }}
           transition={{ duration: 0.3 }}
           style={{
-            background: isDarkMode ? "#333" : "#2563eb",
+            background: isDarkMode ? "#333" : "#1e40af",
             color: isDarkMode ? "#ddd" : "white",
-            border: isDarkMode ? "1px solid #444" : "1px solid #2563eb",
+            border: isDarkMode ? "1px solid #444" : "1px solid #1e40af",
             padding: "12px 24px",
             fontSize: "14px",
             borderRadius: "6px",

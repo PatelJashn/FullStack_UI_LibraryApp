@@ -10,16 +10,18 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Default dark theme (current look) */
-  background-color: #1c1c1e;
+  background-color: #0b0b0b;
   color: #ffffff;
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
 /* Light theme - convert ALL dark colors to light */
 body[data-theme="light"] {
-  background-color: #ffffff;
+  background-color: #FAF9F6;
   color: #333333;
 }
 
@@ -43,11 +45,11 @@ body[data-theme="light"] p {
 }
 
 body[data-theme="light"] a {
-  color: #2563eb;
+  color: #1e40af;
 }
 
 body[data-theme="light"] a:hover {
-  color: #1d4ed8;
+  color: #1e3a8a;
 }
 
 body[data-theme="light"] button {
@@ -57,7 +59,7 @@ body[data-theme="light"] button {
 body[data-theme="light"] input,
 body[data-theme="light"] textarea,
 body[data-theme="light"] select {
-  background-color: #ffffff;
+  background-color: #FAF9F6;
   color: #333333;
   border-color: #d1d5db;
 }
@@ -65,11 +67,7 @@ body[data-theme="light"] select {
 body[data-theme="light"] input:focus,
 body[data-theme="light"] textarea:focus,
 body[data-theme="light"] select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
