@@ -13,14 +13,46 @@ router.get("/", async (req, res) => {
   try {
     const { category, search, page = 1, limit = 12 } = req.query;
     
+    console.log(`🔍 GET /api/ui-components - Category: ${category}, Search: ${search}, Page: ${page}, Limit: ${limit}`);
+    
+    // Helper function to shuffle array randomly
+    const shuffleArray = (array) => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+    
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      // Use local storage
+      console.log('📦 Using local storage (MongoDB not connected)');
+      
+      // Get all components from local storage
       let components = Array.from(localComponents.values());
       
-      // Filter by category
+      // Remove duplicates by keeping only unique components based on id
+      const uniqueComponents = [];
+      const seenIds = new Set();
+      
+      for (const component of components) {
+        const componentId = component.id || component._id;
+        if (!seenIds.has(componentId)) {
+          seenIds.add(componentId);
+          uniqueComponents.push(component);
+        }
+      }
+      
+      components = uniqueComponents;
+      console.log(`📊 Total components in local storage: ${components.length}`);
+      
+      // Filter by category - ONLY if category is specified AND not "All"
       if (category && category !== 'All') {
         components = components.filter(comp => comp.category === category);
+        console.log(`📊 After category filter (${category}): ${components.length} components`);
+      } else {
+        console.log(`📊 No category filter applied - showing all components`);
       }
       
       // Search functionality
@@ -31,18 +63,39 @@ router.get("/", async (req, res) => {
           comp.description.toLowerCase().includes(searchLower) ||
           comp.tags.some(tag => tag.toLowerCase().includes(searchLower))
         );
+        console.log(`📊 After search filter: ${components.length} components`);
       }
       
-      // Sort by creation date (newest first)
-      components.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      // Separate forms from other components
+      const forms = components.filter(comp => comp.category === "Forms");
+      const nonForms = components.filter(comp => comp.category !== "Forms");
+      
+      // Shuffle non-form components randomly
+      const shuffledNonForms = shuffleArray(nonForms);
+      
+      // Combine: shuffled non-forms first, then forms at the end
+      components = [...shuffledNonForms, ...forms];
+      
+      console.log(`📊 After random shuffle: ${shuffledNonForms.length} non-forms + ${forms.length} forms = ${components.length} total`);
       
       const total = components.length;
-      const skip = (page - 1) * limit;
-      const paginatedComponents = components.slice(skip, skip + parseInt(limit));
+      
+      // For "All" category, return ALL components without pagination
+      let paginatedComponents = components;
+      if (category && category !== 'All') {
+        // Only apply pagination for specific categories
+        const skip = (page - 1) * limit;
+        paginatedComponents = components.slice(skip, skip + parseInt(limit));
+        console.log(`📊 After pagination: ${paginatedComponents.length} components (page ${page})`);
+      } else {
+        console.log(`📊 No pagination applied - returning all ${total} components`);
+      }
+      
+      console.log(`✅ Local storage response: ${paginatedComponents.length} components for category: ${category || 'All'}`);
       
       return res.json({
         components: paginatedComponents,
-        totalPages: Math.ceil(total / limit),
+        totalPages: category && category !== 'All' ? Math.ceil(total / limit) : 1,
         currentPage: parseInt(page),
         total,
         message: "Using local storage - components will be lost on server restart"
@@ -50,35 +103,68 @@ router.get("/", async (req, res) => {
     }
 
     // MongoDB is connected - use database
+    console.log('🗄️ Using MongoDB (connected)');
+    
     let query = { isPublic: true };
     
-    // Filter by category
+    // Filter by category - ONLY if category is specified AND not "All"
     if (category && category !== 'All') {
       query.category = category;
+      console.log(`📊 MongoDB query with category filter: ${category}`);
+    } else {
+      console.log(`📊 MongoDB query without category filter - showing all components`);
     }
     
     // Search functionality
     if (search) {
       query.$text = { $search: search };
+      console.log(`📊 MongoDB query with search: ${search}`);
     }
     
-    const skip = (page - 1) * limit;
-    
-    const components = await UIComponent.find(query)
-      .populate('author', 'username fullName')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-    
     const total = await UIComponent.countDocuments(query);
+    console.log(`📊 MongoDB total documents matching query: ${total}`);
+    
+    // For "All" category, return ALL components without pagination
+    let components;
+    if (category && category !== 'All') {
+      // Only apply pagination for specific categories
+      const skip = (page - 1) * limit;
+      components = await UIComponent.find(query)
+        .populate('author', 'username fullName')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit));
+      console.log(`📊 MongoDB paginated result: ${components.length} components (page ${page})`);
+    } else {
+      // Return all components without pagination for "All" category
+      components = await UIComponent.find(query)
+        .populate('author', 'username fullName')
+        .sort({ createdAt: -1 });
+      console.log(`📊 MongoDB all components result: ${components.length} components`);
+      
+      // Separate forms from other components
+      const forms = components.filter(comp => comp.category === "Forms");
+      const nonForms = components.filter(comp => comp.category !== "Forms");
+      
+      // Shuffle non-form components randomly
+      const shuffledNonForms = shuffleArray(nonForms);
+      
+      // Combine: shuffled non-forms first, then forms at the end
+      components = [...shuffledNonForms, ...forms];
+      
+      console.log(`📊 After random shuffle: ${shuffledNonForms.length} non-forms + ${forms.length} forms = ${components.length} total`);
+    }
+    
+    console.log(`✅ MongoDB response: ${components.length} components for category: ${category || 'All'}`);
     
     res.json({
       components,
-      totalPages: Math.ceil(total / limit),
+      totalPages: category && category !== 'All' ? Math.ceil(total / limit) : 1,
       currentPage: parseInt(page),
       total
     });
   } catch (error) {
+    console.error('❌ Error in GET /api/ui-components:', error);
     res.status(500).json({ message: "Error fetching components", error: error.message });
   }
 });
@@ -88,8 +174,8 @@ router.get("/:id", async (req, res) => {
   try {
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      // Use local storage
-      const component = localComponents.get(req.params.id);
+      // Use local storage - check both id and _id
+      const component = localComponents.get(req.params.id) || localComponents.get(req.params.id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
       }
@@ -123,19 +209,28 @@ router.post("/", async (req, res) => {
     }
 
     // Validate code structure
-    if (!code.html || !code.css) {
+    if (!code.html) {
       return res.status(400).json({ 
-        message: "HTML and CSS code are required" 
+        message: "HTML code is required" 
+      });
+    }
+
+    // CSS is only required when not using Tailwind
+    if (!code.css && !req.body.useTailwind) {
+      return res.status(400).json({ 
+        message: "CSS code is required when not using Tailwind" 
       });
     }
 
     const newComponent = {
       id: componentIdCounter.toString(),
+      _id: componentIdCounter.toString(), // Add _id for consistency
       title,
       description,
       category,
       code,
       tags: tags || [],
+      useTailwind: req.body.useTailwind || false,
       author: authorId || "local-user",
       isPublic: true,
       likes: [],
@@ -144,8 +239,9 @@ router.post("/", async (req, res) => {
       updatedAt: new Date()
     };
 
-    // Store locally
+    // Store locally - use both id and _id as keys to ensure consistency
     localComponents.set(newComponent.id, newComponent);
+    localComponents.set(newComponent._id, newComponent);
     componentIdCounter++;
 
     // If MongoDB is connected, also save there
@@ -156,12 +252,13 @@ router.post("/", async (req, res) => {
         category,
         code,
         tags: tags || [],
+        useTailwind: req.body.useTailwind || false,
         author: authorId || "507f1f77bcf86cd799439011" // Placeholder
       });
       await mongoComponent.save();
       console.log(`✅ New UI component saved to MongoDB: ${title}`);
     } else {
-      console.log(`✅ New UI component saved locally: ${title}`);
+      console.log(`✅ New UI component saved locally: ${title} (Total: ${localComponents.size / 2})`);
     }
 
     console.log(`✅ New UI component created: ${title}`);
@@ -212,13 +309,17 @@ router.delete("/:id", async (req, res) => {
   try {
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      // Use local storage
-      const component = localComponents.get(req.params.id);
+      // Use local storage - check both id and _id
+      const component = localComponents.get(req.params.id) || localComponents.get(req.params.id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
       }
       
-      localComponents.delete(req.params.id);
+      // Delete from both id and _id keys
+      localComponents.delete(component.id);
+      localComponents.delete(component._id);
+      console.log(`🗑️ Component deleted from local storage: ${component.title}`);
+      
       return res.json({ message: "Component deleted successfully" });
     }
 

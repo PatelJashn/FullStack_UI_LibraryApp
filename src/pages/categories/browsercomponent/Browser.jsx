@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Sun, Moon, Trash2 } from "lucide-react";
+import { Book, List, CheckSquare, ToggleLeft, CreditCard, Loader, Radio, MousePointerClick, Plus, Sun, Moon, Trash2, FileText } from "lucide-react";
 import "./browse.css";
 import UIUploadModal from "../../../components/UIUploadModal";
 import UIComponentCard from "../../../components/UIComponentCard";
@@ -24,6 +24,7 @@ const UIGallery = () => {
     { name: "Loaders", icon: Loader },
     { name: "Inputs", icon: MousePointerClick },
     { name: "Radio buttons", icon: Radio },
+    { name: "Forms", icon: FileText },
   ];
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const UIGallery = () => {
   }, [selectedCategory]);
 
   const fetchComponents = async () => {
+    console.log('🔄 Fetching components for category:', selectedCategory);
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -42,22 +44,53 @@ const UIGallery = () => {
         params.append("category", selectedCategory);
       }
 
+      // Force refresh for All category by adding a timestamp
+      if (selectedCategory === "All") {
+        params.append("_t", Date.now());
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components?${params}`);
       if (response.ok) {
         const data = await response.json();
-        setComponents(data.components || []);
+        let fetchedComponents = data.components || [];
+        
+        console.log('📊 Fetched components:', fetchedComponents.length);
+        console.log('📊 Response data:', data);
+        
+        // Sort components: put forms at the end in ALL categories
+        fetchedComponents.sort((a, b) => {
+          const aIsForm = a.category === "Forms";
+          const bIsForm = b.category === "Forms";
+          
+          if (aIsForm && !bIsForm) return 1; // Forms go to the end
+          if (!aIsForm && bIsForm) return -1; // Non-forms go to the beginning
+          return 0; // Keep original order within each group
+        });
+        
+        // Always update components when we get data
+        console.log('📊 Setting components:', fetchedComponents.length);
+        setComponents(fetchedComponents);
       } else {
-        setComponents([]);
+        console.error("Failed to fetch components:", response.status);
+        // Don't clear components on error, just log it
       }
     } catch (error) {
-      setComponents([]);
+      console.error("Error fetching components:", error);
+      // Don't clear components on error, just log it
     } finally {
       setLoading(false);
     }
   };
 
   const handleUpload = (newComponent) => {
-    setComponents(prev => [newComponent, ...prev]);
+    console.log('🔄 Adding new component:', newComponent.title, 'Category:', newComponent.category);
+    console.log('📊 Current components before add:', components.length);
+    
+    setComponents(prev => {
+      const updated = [newComponent, ...prev];
+      console.log('📊 Components after add:', updated.length);
+      return updated;
+    });
   };
 
   const handleDeleteModeToggle = () => {
@@ -181,17 +214,19 @@ const UIGallery = () => {
               onClick={handleDeleteModeToggle}
             >
               <Trash2 size={18} />
-              {isDeleteMode ? 'Cancel' : 'Delete'}
+              {isDeleteMode ? 'Cancel Delete Mode' : 'Delete Mode'}
             </button>
 
             {isDeleteMode && selectedComponents.size > 0 && (
-              <button 
-                className="delete-selected-button"
-                onClick={handleDeleteSelected}
-              >
-                <Trash2 size={18} />
-                Delete ({selectedComponents.size})
-              </button>
+              <>
+                <button 
+                  className="delete-selected-button"
+                  onClick={handleDeleteSelected}
+                >
+                  <Trash2 size={18} />
+                  Delete ({selectedComponents.size})
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -214,11 +249,11 @@ const UIGallery = () => {
             </button>
           </div>
         ) : (
-          <div className="components-container grid-view">
+          <div className={`components-container grid-view ${selectedCategory === "All" || selectedCategory === "Forms" ? 'all-category' : ''}`}>
             {components.map((component) => (
               <div 
                 key={component._id || component.id}
-                className={`component-wrapper ${isDeleteMode ? 'delete-mode' : ''} ${selectedComponents.has(component._id || component.id) ? 'selected' : ''}`}
+                className={`component-wrapper ${isDeleteMode ? 'delete-mode' : ''} ${selectedComponents.has(component._id || component.id) ? 'selected' : ''} ${component.category === "Forms" ? 'form-component' : ''}`}
                 onClick={() => handleComponentSelect(component._id || component.id)}
               >
                 <UIComponentCard

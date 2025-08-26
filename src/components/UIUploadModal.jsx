@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Upload, Code, FileText, Tag } from 'lucide-react';
+import { X, Upload, Code, FileText, Tag, Palette } from 'lucide-react';
 import './UIUploadModal.css';
 
 const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
@@ -11,10 +11,11 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
     tags: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [useTailwind, setUseTailwind] = useState(false);
 
   const categories = [
     'All', 'Buttons', 'Checkboxes', 'Toggle switches', 
-    'Cards', 'Loaders', 'Inputs', 'Radio buttons'
+    'Cards', 'Loaders', 'Inputs', 'Radio buttons', 'Forms'
   ];
 
   const handleChange = (e) => {
@@ -36,9 +37,10 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
         category: formData.category,
         code: {
           html: formData.html,
-          css: formData.css,
+          css: useTailwind ? '' : formData.css, // Empty CSS for Tailwind components
           js: formData.js
         },
+        useTailwind: useTailwind,
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
       };
 
@@ -119,40 +121,72 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
             />
           </div>
 
+          <div className="form-group">
+            <label>
+              <Palette size={16} />
+              Styling Method
+            </label>
+            <div className="styling-toggle">
+              <button
+                type="button"
+                className={`toggle-btn ${!useTailwind ? 'active' : ''}`}
+                onClick={() => setUseTailwind(false)}
+              >
+                <Code size={14} />
+                CSS
+              </button>
+              <button
+                type="button"
+                className={`toggle-btn ${useTailwind ? 'active' : ''}`}
+                onClick={() => setUseTailwind(true)}
+              >
+                <Palette size={14} />
+                Tailwind
+              </button>
+            </div>
+          </div>
+
           <div className="code-section">
             <h3>Code</h3>
             
             <div className="form-group">
               <label>
                 <Code size={16} />
-                HTML *
+                {useTailwind ? 'HTML with Tailwind Classes' : 'HTML'} *
               </label>
               <textarea
                 name="html"
                 value={formData.html}
                 onChange={handleChange}
-                placeholder="<div>Your HTML code here</div>"
-                required
+                placeholder={useTailwind ? '<button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Click me</button>' : "<div>Your HTML code here</div>"}
+                required={true}
                 rows={6}
                 className="code-textarea"
               />
+              {useTailwind && (
+                <div className="tailwind-info">
+                  <small>💡 Write your HTML with Tailwind classes directly in the elements. Example: &lt;button class="bg-blue-500 text-white px-4 py-2"&gt;Button&lt;/button&gt;</small>
+                </div>
+              )}
             </div>
 
-            <div className="form-group">
-              <label>
-                <Code size={16} />
-                CSS *
-              </label>
-              <textarea
-                name="css"
-                value={formData.css}
-                onChange={handleChange}
-                placeholder="/* Your CSS styles here */"
-                required
-                rows={6}
-                className="code-textarea"
-              />
-            </div>
+            {!useTailwind && (
+              <div className="form-group">
+                <label>
+                  <Code size={16} />
+                  CSS *
+                </label>
+                <textarea
+                  name="css"
+                  value={formData.css}
+                  onChange={handleChange}
+                  placeholder="/* Your CSS styles here */"
+                  required={!useTailwind}
+                  rows={6}
+                  className="code-textarea"
+                />
+              </div>
+            )}
 
             <div className="form-group">
               <label>

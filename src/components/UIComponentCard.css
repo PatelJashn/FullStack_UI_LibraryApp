@@ -68,10 +68,32 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Ensure form components have strict overflow control */
+.form-component .ui-component-card {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
 .ui-component-card:hover {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   border-color: var(--accent);
+}
+
+/* Tailwind Badge */
+.tailwind-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
+  backdrop-filter: blur(4px);
 }
 
 /* Component Preview */
@@ -83,7 +105,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  border-radius: 16px;
+  padding: 10px;
 }
 
 .preview-iframe {
@@ -93,6 +116,20 @@
   background: #313030;
   display: block;
   pointer-events: none;
+  border-radius: 16px;
+}
+
+/* Enhanced preview for form components only */
+.form-component .component-preview {
+  overflow: hidden; /* Keep forms contained */
+  padding: 0;
+  border-radius: 16px;
+}
+
+.form-component .preview-iframe {
+  border-radius: 16px;
+  box-shadow: none;
+  overflow: hidden; /* Keep forms contained */
 }
 
 /* Grid View */
@@ -102,11 +139,36 @@
   max-height: 525px; /* Increased from 300px to 525px */
 }
 
+/* Form component styling for all categories */
+.form-component .ui-component-card {
+  aspect-ratio: 2/2.5; /* Square-ish aspect ratio for 2x2 grid */
+  min-height: 420px; /* Same as "All" category */
+  max-height: 560px; /* Same as "All" category */
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+/* Form components in "All" category get larger sizing */
+.all-category .form-component .ui-component-card {
+  aspect-ratio: 2/2.5; /* Square-ish aspect ratio for 2x2 grid */
+  min-height: 420px; /* 30% shorter: reduced from 600px to 420px */
+  max-height: 560px; /* 30% shorter: reduced from 800px to 560px */
+  width: 100%;
+}
+
 /* List View */
 .list-view .ui-component-card {
   aspect-ratio: 16/7; /* Changed from 16/4 to 16/7 (75% longer) */
   min-height: 210px; /* Increased from 120px to 210px */
   max-height: 262px; /* Increased from 150px to 262px */
+}
+
+/* Form components in list view */
+.list-view .form-component .ui-component-card {
+  aspect-ratio: 16/8; /* Slightly taller for forms in list view */
+  min-height: 240px;
+  max-height: 300px;
 }
 
 /* Theme-specific styles */
@@ -137,9 +199,25 @@
     min-height: 315px; /* Increased from 180px to 315px */
   }
   
+  .grid-view .form-component .ui-component-card {
+    aspect-ratio: 3/4.2; /* Slightly taller for forms on mobile */
+    min-height: 340px;
+  }
+  
+  .all-category .form-component .ui-component-card {
+    aspect-ratio: 3/4.5; /* Even taller for forms in "All" category on mobile */
+    min-height: 280px; /* 30% shorter: reduced from 400px to 280px */
+    max-height: 350px; /* 30% shorter: reduced from 500px to 350px */
+  }
+  
   .list-view .ui-component-card {
     aspect-ratio: 3/2.625; /* Changed from 3/1 to 3/2.625 (75% longer) */
     min-height: 175px; /* Increased from 100px to 175px */
+  }
+  
+  .list-view .form-component .ui-component-card {
+    aspect-ratio: 3/3.2; /* Taller for forms in list view on mobile */
+    min-height: 200px;
   }
 }
 
@@ -149,8 +227,24 @@
     min-height: 350px; /* Increased from 200px to 350px */
   }
   
+  .grid-view .form-component .ui-component-card {
+    aspect-ratio: 1/1.9; /* Taller for forms on small screens */
+    min-height: 380px;
+  }
+  
+  .all-category .form-component .ui-component-card {
+    aspect-ratio: 1/2.1; /* Even taller for forms in "All" category on small screens */
+    min-height: 315px; /* 30% shorter: reduced from 450px to 315px */
+    max-height: 420px; /* 30% shorter: reduced from 600px to 420px */
+  }
+  
   .list-view .ui-component-card {
     aspect-ratio: 2/1.75; /* Changed from 2/1 to 2/1.75 (75% longer) */
     min-height: 210px; /* Increased from 120px to 210px */
+  }
+  
+  .list-view .form-component .ui-component-card {
+    aspect-ratio: 2/2.2; /* Taller for forms in list view on small screens */
+    min-height: 240px;
   }
 } 

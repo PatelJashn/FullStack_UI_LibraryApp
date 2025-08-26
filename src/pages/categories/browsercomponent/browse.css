@@ -196,6 +196,71 @@ body {
   width: 100%;
 }
 
+/* Special styling for "All" category to accommodate larger form components */
+.all-category {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  align-items: start; /* Align items to start to prevent stretching */
+}
+
+/* Form component styling for both "All" and "Forms" categories */
+.all-category .form-component {
+  grid-column: span 2; /* Span 2 columns */
+  grid-row: span 2; /* Span 2 rows */
+  width: 100%;
+  max-width: none; /* Remove max-width restriction */
+}
+
+.all-category .form-component .ui-component-card {
+  aspect-ratio: 2/2.5; /* Square-ish aspect ratio for 2x2 grid */
+  min-height: 420px; /* 30% shorter: reduced from 600px to 420px */
+  max-height: 560px; /* 30% shorter: reduced from 800px to 560px */
+  width: 100%;
+}
+
+/* Form components styling for all categories */
+.form-component .ui-component-card {
+  aspect-ratio: 2/2.5; /* Square-ish aspect ratio for 2x2 grid */
+  min-height: 420px; /* Same as "All" category */
+  max-height: 560px; /* Same as "All" category */
+  width: 100%;
+}
+
+/* Responsive adjustments for form components */
+@media (max-width: 768px) {
+  .all-category {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  
+  .all-category .form-component {
+    grid-column: span 1; /* On mobile, forms span 1 column */
+    grid-row: span 1; /* On mobile, forms span 1 row */
+    max-width: 320px;
+  }
+  
+  .all-category .form-component .ui-component-card {
+    aspect-ratio: 3/4.5;
+    min-height: 280px; /* 30% shorter: reduced from 400px to 280px */
+  }
+}
+
+@media (max-width: 480px) {
+  .all-category {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .all-category .form-component {
+    max-width: 100%;
+  }
+  
+  .all-category .form-component .ui-component-card {
+    aspect-ratio: 1/1.8;
+    min-height: 315px; /* 30% shorter: reduced from 450px to 315px */
+  }
+}
+
 /* Component Cards */
 /* Component Cards */
 .component-card {

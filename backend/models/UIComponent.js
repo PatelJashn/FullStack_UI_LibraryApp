@@ -20,7 +20,7 @@ const UIComponentSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['All', 'Buttons', 'Checkboxes', 'Toggle switches', 'Cards', 'Loaders', 'Inputs', 'Radio buttons']
+    enum: ['All', 'Buttons', 'Checkboxes', 'Toggle switches', 'Cards', 'Loaders', 'Inputs', 'Radio buttons', 'Forms']
   },
   code: {
     html: {
@@ -29,7 +29,10 @@ const UIComponentSchema = new mongoose.Schema({
     },
     css: {
       type: String,
-      required: true
+      required: function() {
+        return !this.useTailwind; // CSS is only required when not using Tailwind
+      },
+      default: ""
     },
     js: {
       type: String,
@@ -44,6 +47,10 @@ const UIComponentSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
+  useTailwind: {
+    type: Boolean,
+    default: false
+  },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

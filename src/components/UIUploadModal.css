@@ -191,6 +191,62 @@
   background: #444;
 }
 
+/* Styling toggle buttons */
+.styling-toggle {
+  display: flex;
+  gap: 8px;
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #888;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.toggle-btn:hover {
+  color: #ccc;
+}
+
+.toggle-btn.active {
+  background: #8a6eff;
+  color: white;
+  box-shadow: 0 2px 8px rgba(138, 110, 255, 0.3);
+}
+
+.toggle-btn.active:hover {
+  background: #7a5eef;
+}
+
+/* Tailwind info text */
+.tailwind-info {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(138, 110, 255, 0.1);
+  border: 1px solid rgba(138, 110, 255, 0.2);
+  border-radius: 4px;
+}
+
+.tailwind-info small {
+  color: #8a6eff;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .upload-modal {
@@ -209,6 +265,14 @@
   .cancel-btn,
   .upload-btn {
     width: 100%;
+    justify-content: center;
+  }
+  
+  .styling-toggle {
+    flex-direction: column;
+  }
+  
+  .toggle-btn {
     justify-content: center;
   }
 } 

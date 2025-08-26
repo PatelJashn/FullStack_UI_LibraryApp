@@ -6,11 +6,12 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo 'No build step needed for backend'"
-  },
+"scripts": {
+  "start": "node server.js",
+  "dev": "npx kill-port 5002 && node server.js",
+  "build": "echo 'No build step needed for backend'"
+},
+
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

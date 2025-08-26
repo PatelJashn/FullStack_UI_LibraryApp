@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Copy, Check, ArrowLeft, Code, Eye, Download, Send, Sparkles } from "lucide-react";
+import { Copy, Check, ArrowLeft, Code, Eye, Download, Send, Sparkles, Save } from "lucide-react";
 import "./ComponentDetail.css";
 
 const ComponentDetail = () => {
@@ -15,10 +15,17 @@ const ComponentDetail = () => {
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [modifiedComponent, setModifiedComponent] = useState(null);
   const [showModified, setShowModified] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableHtml, setEditableHtml] = useState("");
+  const [editableCss, setEditableCss] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (location.state && location.state.component) {
-      setComponent(location.state.component);
+      const comp = location.state.component;
+      setComponent(comp);
+      setEditableHtml(comp.code?.html || "");
+      setEditableCss(comp.code?.css || "");
       setLoading(false);
     } else {
       fetchComponent();
@@ -31,7 +38,10 @@ const ComponentDetail = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${id}`);
       if (response.ok) {
         const data = await response.json();
-        setComponent(data.component || data);
+        const fetchedComponent = data.component || data;
+        setComponent(fetchedComponent);
+        setEditableHtml(fetchedComponent.code?.html || "");
+        setEditableCss(fetchedComponent.code?.css || "");
       } else {
         setComponent(null);
       }
@@ -110,6 +120,49 @@ const ComponentDetail = () => {
     setShowModified(false);
   };
 
+  const handleSaveChanges = async () => {
+    if (!component) return;
+    
+    setIsSaving(true);
+    try {
+      const updatedComponent = {
+        ...component,
+        code: {
+          ...component.code,
+          html: editableHtml,
+          css: editableCss
+        }
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedComponent)
+      });
+
+      if (response.ok) {
+        setComponent(updatedComponent);
+        setIsEditing(false);
+        alert("Changes saved successfully!");
+      } else {
+        throw new Error('Failed to save changes');
+      }
+    } catch (error) {
+      console.error('Error saving changes:', error);
+      alert('Error saving changes: ' + error.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditableHtml(component.code?.html || "");
+    setEditableCss(component.code?.css || "");
+    setIsEditing(false);
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -153,7 +206,14 @@ const ComponentDetail = () => {
         {/* Left Side - Preview Panel */}
         <div className="preview-section">
           <div className="preview-header">
-            <h3>Preview</h3>
+            <div className="preview-title">
+              <h3>Preview</h3>
+              {(showModified ? modifiedComponent : component)?.useTailwind && (
+                <div className="tailwind-indicator">
+                  <span>Tailwind CSS</span>
+                </div>
+              )}
+            </div>
             {showModified && (
               <div className="preview-actions">
                 <button
@@ -171,7 +231,8 @@ const ComponentDetail = () => {
                 className="component-preview"
                 dangerouslySetInnerHTML={{ 
                   __html: `
-                    <style>${(showModified ? modifiedComponent : component)?.code?.css || ''}</style>
+                    ${(showModified ? modifiedComponent : component)?.useTailwind ? '<script src="https://cdn.tailwindcss.com"></script>' : ''}
+                    <style>${!(showModified ? modifiedComponent : component)?.useTailwind ? (showModified ? modifiedComponent : component)?.code?.css || '' : ''}</style>
                     ${(showModified ? modifiedComponent : component)?.code?.html || ''}
                   `
                 }}
@@ -199,7 +260,7 @@ const ComponentDetail = () => {
               onClick={() => setActiveTab("css")}
             >
               <Code size={18} />
-              CSS
+              {(showModified ? modifiedComponent : component)?.useTailwind ? 'HTML with Tailwind' : 'CSS'}
             </button>
             <button
               className={`tab-button ${activeTab === "ai" ? "active" : ""}`}
@@ -214,13 +275,15 @@ const ComponentDetail = () => {
             {activeTab === "html" && (
               <div className="code-container">
                 <div className="code-header">
-                  <button
-                    className="copy-button"
-                    onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.code?.html || '', "html")}
-                  >
-                    {copied.html ? <Check size={16} /> : <Copy size={16} />}
-                    {copied.html ? "Copied!" : "Copy"}
-                  </button>
+                  <div className="code-actions">
+                    <button
+                      className="copy-button"
+                      onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.code?.html || '', "html")}
+                    >
+                      {copied.html ? <Check size={16} /> : <Copy size={16} />}
+                      {copied.html ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
                 </div>
                 <pre className="code-block html-code">
                   <code>{(showModified ? modifiedComponent : component)?.code?.html || ''}</code>
@@ -231,16 +294,18 @@ const ComponentDetail = () => {
             {activeTab === "css" && (
               <div className="code-container">
                 <div className="code-header">
-                  <button
-                    className="copy-button"
-                    onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.code?.css || '', "css")}
-                  >
-                    {copied.css ? <Check size={16} /> : <Copy size={16} />}
-                    {copied.css ? "Copied!" : "Copy"}
-                  </button>
+                  <div className="code-actions">
+                    <button
+                      className="copy-button"
+                      onClick={() => copyToClipboard((showModified ? modifiedComponent : component)?.useTailwind ? (showModified ? modifiedComponent : component)?.code?.html || '' : (showModified ? modifiedComponent : component)?.code?.css || '', "css")}
+                    >
+                      {copied.css ? <Check size={16} /> : <Copy size={16} />}
+                      {copied.css ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
                 </div>
                 <pre className="code-block css-code">
-                  <code>{(showModified ? modifiedComponent : component)?.code?.css || ''}</code>
+                  <code>{(showModified ? modifiedComponent : component)?.useTailwind ? (showModified ? modifiedComponent : component)?.code?.html || '' : (showModified ? modifiedComponent : component)?.code?.css || ''}</code>
                 </pre>
               </div>
             )}

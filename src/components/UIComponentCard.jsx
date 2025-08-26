@@ -20,6 +20,11 @@ const UIComponentCard = ({ component, viewMode = 'grid', theme = 'dark', isDelet
 
   return (
     <div className={cardClass} onClick={handleCardClick}>
+      {component.useTailwind && (
+        <div className="tailwind-badge">
+          <span>TW</span>
+        </div>
+      )}
       <div className="component-preview">
         <iframe
           srcDoc={`
@@ -28,10 +33,11 @@ const UIComponentCard = ({ component, viewMode = 'grid', theme = 'dark', isDelet
             <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              ${component.useTailwind ? '<script src="https://cdn.tailwindcss.com"></script>' : ''}
               <style>
                 html, body { 
                   margin: 0 !important; 
-                  padding: 20px !important; 
+                  padding: 10px !important; 
                   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
                   background: transparent !important;
                   display: flex !important;
@@ -43,13 +49,21 @@ const UIComponentCard = ({ component, viewMode = 'grid', theme = 'dark', isDelet
                   height: 100% !important;
                 }
                 
-                /* Ensure all direct children of body are centered */
-                body > * {
+                /* Only constrain forms to prevent overflow */
+                form, .form, [class*="form"] {
                   max-width: 100% !important;
                   max-height: 100% !important;
+                  overflow: hidden !important;
+                  box-sizing: border-box !important;
                 }
                 
-                ${component.code?.css || ''}
+                /* Basic box-sizing for all elements */
+                * {
+                  box-sizing: border-box !important;
+                }
+                
+                /* Component's own CSS */
+                ${!component.useTailwind ? component.code?.css || '' : ''}
               </style>
             </head>
             <body>
