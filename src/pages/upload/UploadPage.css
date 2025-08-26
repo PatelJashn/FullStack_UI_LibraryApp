@@ -5,3 +5,8 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Light mode upload page */
+body[data-theme="light"] .upload-page {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}

@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import symbol from '../../assets/Symbol.png';
 import './navbar.css';
 import { useAuth } from '../AuthContext';
+import { useTheme } from '../ThemeContext';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -36,6 +38,26 @@ const Navbar = () => {
           </li>
         </ul>
         <ul className="nav-right">
+          {/* Simple Theme Toggle */}
+          <li className='tab'>
+            <button 
+              onClick={toggleTheme}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'aliceblue',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '50%',
+                fontSize: '18px',
+                transition: 'all 0.3s ease'
+              }}
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDarkMode ? '☀️' : '🌙'}
+            </button>
+          </li>
+          
           {!isAuthenticated ? (
             <>
               <li className='tab' id='signin'>

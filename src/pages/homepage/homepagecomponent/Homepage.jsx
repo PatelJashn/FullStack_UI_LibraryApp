@@ -1,21 +1,24 @@
 import React from "react";
+import { useTheme } from "../../../components/ThemeContext";
 
 const Part = () => {
+  const { isDarkMode } = useTheme();
+
   const containerStyle = {
     fontSize: "40px",
     paddingRight: "300px",
     paddingLeft: "360px",
     paddingTop: "70px",
     paddingBottom: "70px",
-    backgroundColor: "rgb(30, 28, 28)",
+    backgroundColor: isDarkMode ? "rgb(30, 28, 28)" : "#ffffff",
     fontFamily: "Arial, Helvetica, sans-serif",
-    color: "aliceblue",
+    color: isDarkMode ? "aliceblue" : "#333333",
   };
 
   const paragraphStyle = {
     fontSize: "16px",
     textAlign: "justify",
-    color: "rgba(17, 233, 17, 0.768)",
+    color: isDarkMode ? "rgba(17, 233, 17, 0.768)" : "#2563eb",
     textDecoration: "underline",
   };
 

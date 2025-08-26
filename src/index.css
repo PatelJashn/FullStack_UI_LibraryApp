@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Default dark theme (current look) */
+  background-color: #1c1c1e;
+  color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme - convert ALL dark colors to light */
+body[data-theme="light"] {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Light theme for ALL elements */
+body[data-theme="light"] * {
+  color: inherit;
+}
+
+/* Light theme for specific elements that need different colors */
+body[data-theme="light"] h1,
+body[data-theme="light"] h2,
+body[data-theme="light"] h3,
+body[data-theme="light"] h4,
+body[data-theme="light"] h5,
+body[data-theme="light"] h6 {
+  color: #1a1a1a;
+}
+
+body[data-theme="light"] p {
+  color: #4a4a4a;
+}
+
+body[data-theme="light"] a {
+  color: #2563eb;
+}
+
+body[data-theme="light"] a:hover {
+  color: #1d4ed8;
+}
+
+body[data-theme="light"] button {
+  color: #333333;
+}
+
+body[data-theme="light"] input,
+body[data-theme="light"] textarea,
+body[data-theme="light"] select {
+  background-color: #ffffff;
+  color: #333333;
+  border-color: #d1d5db;
+}
+
+body[data-theme="light"] input:focus,
+body[data-theme="light"] textarea:focus,
+body[data-theme="light"] select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

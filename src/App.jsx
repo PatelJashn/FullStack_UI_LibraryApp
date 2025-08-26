@@ -8,28 +8,31 @@ import ComponentDetail from "./pages/component-detail/ComponentDetail";
 import Signup from "./pages/signuppage/signup.jsx"; // Fixed capitalization
 import UploadPage from "./pages/upload/UploadPage";
 import { AuthProvider } from "./components/AuthContext";
+import { ThemeProvider } from "./components/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import Showcase from "./pages/showcase/Showcasefinal"
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar /> {/* Navbar always stays at the top */}
-        <Routes>
-          <Route path="/" element={<Homepagefinal />} /> {/* Index page directs to Homepage */}
-          <Route path="/homepage" element={<Homepagefinal />} /> {/* Optional: Keep this for direct access */}
-          <Route path="/categories" element={
-            <Browserfinal />
-          } />
-          <Route path="/component/:id" element={<ComponentDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/upload" element={<UploadPage />} />
-        </Routes>
-        <Footer /> {/* Footer always stays at the bottom */}
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Navbar /> {/* Navbar always stays at the top */}
+          <Routes>
+            <Route path="/" element={<Homepagefinal />} /> {/* Index page directs to Homepage */}
+            <Route path="/homepage" element={<Homepagefinal />} /> {/* Optional: Keep this for direct access */}
+            <Route path="/categories" element={
+              <Browserfinal />
+            } />
+            <Route path="/component/:id" element={<ComponentDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/upload" element={<UploadPage />} />
+          </Routes>
+          <Footer /> {/* Footer always stays at the bottom */}
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

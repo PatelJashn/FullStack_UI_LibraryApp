@@ -28,6 +28,12 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Light mode container */
+body[data-theme="light"] .component-detail-container {
+  background-color: #ffffff;
+  color: #333333;
+}
+
 /* Header */
 .detail-header {
   background-color: var(--bg-secondary);
@@ -36,6 +42,12 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+/* Light mode header */
+body[data-theme="light"] .detail-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .back-button {
@@ -53,9 +65,23 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode back button */
+body[data-theme="light"] .back-button {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #333333;
+}
+
 .back-button:hover {
   background: var(--bg-card);
   border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Light mode back button hover */
+body[data-theme="light"] .back-button:hover {
+  background: #f3f4f6;
+  border-color: #2563eb;
   transform: translateY(-1px);
 }
 
@@ -80,6 +106,13 @@
   border: 1px solid var(--border);
 }
 
+/* Light mode category tag */
+body[data-theme="light"] .category-tag {
+  background: #ffffff;
+  color: #2563eb;
+  border: 1px solid #d1d5db;
+}
+
 /* Main Content Layout */
 .detail-content {
   display: flex;
@@ -96,12 +129,23 @@
   flex-direction: column;
 }
 
+/* Light mode preview section */
+body[data-theme="light"] .preview-section {
+  background-color: #f8f9fa;
+  border-right: 1px solid #e5e7eb;
+}
+
 .preview-header {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* Light mode preview header */
+body[data-theme="light"] .preview-header {
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .preview-title {
@@ -115,6 +159,11 @@
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* Light mode preview header title */
+body[data-theme="light"] .preview-header h3 {
+  color: #1a1a1a;
 }
 
 .tailwind-indicator {
@@ -147,10 +196,24 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode action button */
+body[data-theme="light"] .action-button {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #666666;
+}
+
 .action-button:hover {
   background: var(--bg-card);
   color: var(--text-primary);
   border-color: var(--accent);
+}
+
+/* Light mode action button hover */
+body[data-theme="light"] .action-button:hover {
+  background: #f3f4f6;
+  color: #333333;
+  border-color: #2563eb;
 }
 
 /* Centering the component in the preview panel */
@@ -164,6 +227,11 @@
   min-height: 400px;
 }
 
+/* Light mode preview frame */
+body[data-theme="light"] .preview-frame {
+  background-color: #ffffff;
+}
+
 .component-preview {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -171,11 +239,18 @@
   padding: 20px;
   max-width: 100%;
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
   box-shadow: 0 4px 20px var(--shadow);
   display: flex;
   align-items: center;        /* inner vertical center */
   justify-content: center;    /* inner horizontal center */
+}
+
+/* Light mode component preview */
+body[data-theme="light"] .component-preview {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Right Side - Code and AI Panel */
@@ -186,12 +261,23 @@
   flex-direction: column;
 }
 
+/* Light mode code section */
+body[data-theme="light"] .code-section {
+  background-color: #ffffff;
+}
+
 /* Tab Navigation */
 .tab-navigation {
   display: flex;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   padding: 0 24px;
+}
+
+/* Light mode tab navigation */
+body[data-theme="light"] .tab-navigation {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .tab-button {
@@ -209,15 +295,33 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode tab button */
+body[data-theme="light"] .tab-button {
+  color: #666666;
+}
+
 .tab-button:hover {
   color: var(--text-primary);
   background-color: var(--bg-tertiary);
+}
+
+/* Light mode tab button hover */
+body[data-theme="light"] .tab-button:hover {
+  color: #333333;
+  background-color: #e9ecef;
 }
 
 .tab-button.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
   background-color: var(--bg-primary);
+}
+
+/* Light mode tab button active */
+body[data-theme="light"] .tab-button.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  background-color: #ffffff;
 }
 
 /* Tab Content */
@@ -236,6 +340,12 @@
   margin-bottom: 20px;
 }
 
+/* Light mode code container */
+body[data-theme="light"] .code-container {
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+}
+
 .code-header {
   display: flex;
   justify-content: space-between;
@@ -243,6 +353,12 @@
   padding: 16px 20px;
   background: var(--bg-tertiary);
   border-bottom: 1px solid var(--border);
+}
+
+/* Light mode code header */
+body[data-theme="light"] .code-header {
+  background: #e9ecef;
+  border-bottom: 1px solid #d1d5db;
 }
 
 .code-actions {
@@ -310,9 +426,22 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode cancel button */
+body[data-theme="light"] .cancel-button {
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .cancel-button:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+/* Light mode cancel button hover */
+body[data-theme="light"] .cancel-button:hover {
+  background: #f3f4f6;
+  color: #333333;
 }
 
 .copy-button {
@@ -330,9 +459,22 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode copy button */
+body[data-theme="light"] .copy-button {
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .copy-button:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+/* Light mode copy button hover */
+body[data-theme="light"] .copy-button:hover {
+  background: #f3f4f6;
+  color: #333333;
 }
 
 .code-block {
@@ -346,6 +488,12 @@
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Light mode code block */
+body[data-theme="light"] .code-block {
+  background: #ffffff;
+  color: #333333;
 }
 
 .code-editor {
@@ -363,6 +511,12 @@
   box-sizing: border-box;
 }
 
+/* Light mode code editor */
+body[data-theme="light"] .code-editor {
+  background: #ffffff;
+  color: #333333;
+}
+
 .code-editor:focus {
   outline: none;
 }
@@ -373,6 +527,12 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 24px;
+}
+
+/* Light mode AI container */
+body[data-theme="light"] .ai-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
 }
 
 .ai-header {
@@ -386,10 +546,20 @@
   color: var(--text-primary);
 }
 
+/* Light mode AI header */
+body[data-theme="light"] .ai-header h3 {
+  color: #1a1a1a;
+}
+
 .ai-header p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 14px;
+}
+
+/* Light mode AI header text */
+body[data-theme="light"] .ai-header p {
+  color: #666666;
 }
 
 .ai-prompt-section {
@@ -412,14 +582,32 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode AI prompt input */
+body[data-theme="light"] .ai-prompt-input {
+  background-color: #f8f9fa;
+  border: 1px solid #d1d5db;
+  color: #333333;
+}
+
 .ai-prompt-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
+/* Light mode AI prompt input focus */
+body[data-theme="light"] .ai-prompt-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
 .ai-prompt-input::placeholder {
   color: var(--text-muted);
+}
+
+/* Light mode AI prompt input placeholder */
+body[data-theme="light"] .ai-prompt-input::placeholder {
+  color: #9ca3af;
 }
 
 .ai-submit-button {
@@ -437,8 +625,20 @@
   transition: all 0.3s ease;
 }
 
+/* Light mode AI submit button */
+body[data-theme="light"] .ai-submit-button {
+  background: #2563eb;
+  color: white;
+}
+
 .ai-submit-button:hover:not(:disabled) {
   background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Light mode AI submit button hover */
+body[data-theme="light"] .ai-submit-button:hover:not(:disabled) {
+  background: #1d4ed8;
   transform: translateY(-1px);
 }
 
@@ -490,6 +690,12 @@
   margin-bottom: 24px;
 }
 
+/* Light mode AI results */
+body[data-theme="light"] .ai-results {
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid #00ff88;
+}
+
 .ai-results h4 {
   margin: 0 0 8px 0;
   color: var(--success);
@@ -503,11 +709,21 @@
   font-size: 14px;
 }
 
+/* Light mode AI results text */
+body[data-theme="light"] .ai-results p {
+  color: #666666;
+}
+
 .ai-results ul {
   margin: 0;
   padding-left: 20px;
   color: var(--text-secondary);
   font-size: 14px;
+}
+
+/* Light mode AI results list */
+body[data-theme="light"] .ai-results ul {
+  color: #666666;
 }
 
 .ai-results li {
@@ -528,6 +744,11 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* Light mode preview header title */
+body[data-theme="light"] .preview-header h3 {
+  color: #1a1a1a;
 }
 
 .preview-actions {
@@ -563,6 +784,12 @@
   padding: 24px 30px;
 }
 
+/* Light mode component details */
+body[data-theme="light"] .component-details {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+}
+
 .detail-section {
   margin-bottom: 24px;
 }
@@ -578,11 +805,21 @@
   color: var(--text-primary);
 }
 
+/* Light mode detail section title */
+body[data-theme="light"] .detail-section h3 {
+  color: #1a1a1a;
+}
+
 .detail-section p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.6;
+}
+
+/* Light mode detail section text */
+body[data-theme="light"] .detail-section p {
+  color: #666666;
 }
 
 .tags-container {
@@ -601,9 +838,21 @@
   border: 1px solid var(--border);
 }
 
+/* Light mode tag */
+body[data-theme="light"] .tag {
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .no-tags {
   color: var(--text-muted);
   font-style: italic;
+}
+
+/* Light mode no tags */
+body[data-theme="light"] .no-tags {
+  color: #9ca3af;
 }
 
 /* Loading and Error States */
@@ -617,6 +866,12 @@
   padding: 40px;
   text-align: center;
   color: var(--text-secondary);
+}
+
+/* Light mode loading/error containers */
+body[data-theme="light"] .loading-container,
+body[data-theme="light"] .error-container {
+  color: #666666;
 }
 
 .loading-spinner {
@@ -648,6 +903,11 @@
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--border);
+  }
+  
+  /* Light mode preview section border */
+  body[data-theme="light"] .preview-section {
+    border-bottom: 1px solid #e5e7eb;
   }
   
   .preview-frame {

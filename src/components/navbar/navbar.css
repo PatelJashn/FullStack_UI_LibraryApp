@@ -15,6 +15,14 @@ body {
     background-color: rgba(24, 23, 23, 0.95);
     padding: 15px 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+/* Light mode navbar */
+body[data-theme="light"] .bar {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #e5e7eb;
 }
 
 /* Separate sections for left and right */
@@ -52,10 +60,20 @@ nav {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+/* Light mode text color */
+body[data-theme="light"] .bar li {
+    color: #333333;
+}
+
 .bar li:hover {
     background-color: rgba(255, 255, 255, 0.1);
     transform: scale(1.05);
     cursor: pointer;
+}
+
+/* Light mode hover */
+body[data-theme="light"] .bar li:hover {
+    background-color: #f3f4f6;
 }
 
 .bar a {
@@ -74,6 +92,11 @@ nav {
     transform: translateY(-3px);
 }
 
+/* Light mode link hover */
+body[data-theme="light"] .bar a:hover {
+    color: #1f2937;
+}
+
 .bar img {
     height: 30px;
     transition: transform 0.3s ease;
@@ -90,11 +113,23 @@ nav {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+/* Light mode button colors */
+body[data-theme="light"] .btn-light, 
+body[data-theme="light"] .btn-dark {
+    color: #333333;
+}
+
 /* Hover effect to match other navbar items */
 .btn-light:hover, .btn-dark:hover {
     background-color: rgba(255, 255, 255, 0.1);
     transform: scale(1.05);
     cursor: pointer;
+}
+
+/* Light mode button hover */
+body[data-theme="light"] .btn-light:hover, 
+body[data-theme="light"] .btn-dark:hover {
+    background-color: #f3f4f6;
 }
 
 @media (max-width: 768px) {

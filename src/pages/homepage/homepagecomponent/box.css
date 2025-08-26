@@ -6,6 +6,13 @@ body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1e; /* Dark page background */
     color: #ffffff; /* White text */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode body */
+body[data-theme="light"] {
+    background-color: #ffffff;
+    color: #333333;
 }
 
 /* Ensure all elements respect box sizing */
@@ -21,6 +28,12 @@ body {
     justify-content: space-between;
     overflow: hidden;
     background-color: #1c1c1e; /* Match body background to avoid white gap */
+    transition: background-color 0.3s ease;
+}
+
+/* Light mode container */
+body[data-theme="light"] .container1 {
+    background-color: #ffffff;
 }
 
 /* Individual box styling */
@@ -36,8 +49,21 @@ body {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+/* Light mode boxes */
+body[data-theme="light"] .box1 {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
 /* Hover effect for boxes */
 .box1:hover {
     background-color: #444;
+    transform: scale(1.05);
+}
+
+/* Light mode box hover */
+body[data-theme="light"] .box1:hover {
+    background-color: #e9ecef;
     transform: scale(1.05);
 }

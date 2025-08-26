@@ -1,7 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "../../../components/ThemeContext";
 
 const CommunitySection = () => {
+  const { isDarkMode } = useTheme();
+
   const leaderboard = [
     { rank: 1, name: "John Doe", contributions: 250, avatar: "https://i.pravatar.cc/50?img=1" },
     { rank: 2, name: "Jane Smith", contributions: 190, avatar: "https://i.pravatar.cc/50?img=2" },
@@ -11,9 +14,9 @@ const CommunitySection = () => {
   return (
     <div
       style={{
-        backgroundColor: "#0b0b0b",
+        backgroundColor: isDarkMode ? "#0b0b0b" : "#ffffff",
         padding: "80px 20px",
-        color: "white",
+        color: isDarkMode ? "white" : "#333333",
         display: "flex",
         justifyContent: "center",
         gap: "30px",
@@ -26,23 +29,23 @@ const CommunitySection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         style={{
-          background: "linear-gradient(135deg, #111, #222)",
+          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "linear-gradient(135deg, #f8f9fa, #e9ecef)",
           padding: "40px",
           borderRadius: "15px",
           width: "400px",
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
         <h2
           style={{
             fontSize: "24px",
             fontWeight: "bold",
-            color: "#bbb",
+            color: isDarkMode ? "#bbb" : "#1a1a1a",
           }}
         >
           🏆 Community Leaderboard
         </h2>
-        <p style={{ color: "#888", fontSize: "14px", marginBottom: "15px" }}>Top contributors in the community</p>
+        <p style={{ color: isDarkMode ? "#888" : "#666666", fontSize: "14px", marginBottom: "15px" }}>Top contributors in the community</p>
         <div>
           {leaderboard.map((user) => (
             <motion.div
@@ -53,32 +56,38 @@ const CommunitySection = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
-                background: "#1b1b1b",
+                background: isDarkMode ? "#1b1b1b" : "#ffffff",
                 padding: "12px",
                 borderRadius: "8px",
                 marginBottom: "10px",
-                boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.3)",
+                boxShadow: isDarkMode ? "0px 2px 10px rgba(0, 0, 0, 0.3)" : "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                border: isDarkMode ? "none" : "1px solid #e5e7eb",
               }}
             >
               <img
                 src={user.avatar}
                 alt={user.name}
-                style={{ borderRadius: "50%", width: "40px", height: "40px", border: "2px solid #444" }}
+                style={{ 
+                  borderRadius: "50%", 
+                  width: "40px", 
+                  height: "40px", 
+                  border: isDarkMode ? "2px solid #444" : "2px solid #d1d5db" 
+                }}
               />
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#ddd" }}>{user.name}</h3>
-                <p style={{ color: "#aaa", fontSize: "12px" }}>Contributions: {user.contributions}</p>
+                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#333333" }}>{user.name}</h3>
+                <p style={{ color: isDarkMode ? "#aaa" : "#666666", fontSize: "12px" }}>Contributions: {user.contributions}</p>
               </div>
             </motion.div>
           ))}
         </div>
         <motion.button
-          whileHover={{ scale: 1.1, boxShadow: "0px 0px 15px #444" }}
+          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(37, 99, 235, 0.3)" }}
           transition={{ duration: 0.3 }}
           style={{
-            background: "#222",
-            color: "#ddd",
-            border: "1px solid #444",
+            background: isDarkMode ? "#222" : "#2563eb",
+            color: isDarkMode ? "#ddd" : "white",
+            border: isDarkMode ? "1px solid #444" : "1px solid #2563eb",
             padding: "10px 20px",
             fontSize: "14px",
             borderRadius: "6px",
@@ -97,11 +106,11 @@ const CommunitySection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         style={{
-          background: "linear-gradient(135deg, #111, #222)",
+          background: isDarkMode ? "linear-gradient(135deg, #111, #222)" : "linear-gradient(135deg, #f8f9fa, #e9ecef)",
           padding: "40px",
           borderRadius: "15px",
           width: "400px",
-          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+          boxShadow: isDarkMode ? "0px 4px 20px rgba(0, 0, 0, 0.5)" : "0px 4px 20px rgba(0, 0, 0, 0.1)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -112,19 +121,19 @@ const CommunitySection = () => {
           <span style={{ color: "limegreen", fontSize: "14px", marginRight: "5px" }}>●</span>
           <span style={{ color: "limegreen", fontSize: "14px" }}>376 online</span>
         </div>
-        <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#ddd", textAlign: "center" }}>
+        <h2 style={{ fontSize: "22px", fontWeight: "bold", color: isDarkMode ? "#ddd" : "#1a1a1a", textAlign: "center" }}>
           Join the Discord community!
         </h2>
-        <p style={{ color: "#888", fontSize: "14px", textAlign: "center", marginBottom: "15px" }}>
+        <p style={{ color: isDarkMode ? "#888" : "#666666", fontSize: "14px", textAlign: "center", marginBottom: "15px" }}>
           An open space for UI designers and developers
         </p>
         <motion.button
-          whileHover={{ scale: 1.1, boxShadow: "0px 0px 15px #444" }}
+          whileHover={{ scale: 1.1, boxShadow: isDarkMode ? "0px 0px 15px #444" : "0px 0px 15px rgba(37, 99, 235, 0.3)" }}
           transition={{ duration: 0.3 }}
           style={{
-            background: "#333",
-            color: "#ddd",
-            border: "1px solid #444",
+            background: isDarkMode ? "#333" : "#2563eb",
+            color: isDarkMode ? "#ddd" : "white",
+            border: isDarkMode ? "1px solid #444" : "1px solid #2563eb",
             padding: "12px 24px",
             fontSize: "14px",
             borderRadius: "6px",

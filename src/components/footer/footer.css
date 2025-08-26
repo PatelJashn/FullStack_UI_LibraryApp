@@ -8,6 +8,13 @@
     text-align: center;
     border-top: 1px solid var(--border, #222);
   }
+
+/* Light mode footer */
+body[data-theme="light"] .footer {
+    background: #f8f9fa;
+    color: #333333;
+    border-top: 1px solid #e5e7eb;
+  }
   
   /* Container */
   .footer-container {
@@ -32,6 +39,12 @@
     color: #b4bebf;
     text-shadow: 0px 0px 15px rgba(13, 16, 17, 0.5);
   }
+
+/* Light mode logo */
+body[data-theme="light"] .logo {
+    color: #4a5568;
+    text-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  }
   
   /* Social Icons */
   .social-icons a {
@@ -40,9 +53,20 @@
     font-size: 1.4rem;
     transition: 0.3s;
   }
+
+/* Light mode social icons */
+body[data-theme="light"] .social-icons a {
+    color: #4a5568;
+  }
   
   .social-icons a:hover {
     color: #061516;
+    transform: scale(1.2);
+  }
+
+/* Light mode social icons hover */
+body[data-theme="light"] .social-icons a:hover {
+    color: #2d3748;
     transform: scale(1.2);
   }
   
@@ -61,15 +85,31 @@
     color: var(--text-secondary, #bbb);
     transition: 0.3s;
   }
+
+/* Light mode links */
+body[data-theme="light"] .links ul li a {
+    color: #666666;
+  }
   
   .links ul li a:hover {
     color: var(--accent, #a2aaaa);
     text-shadow: 0px 0px 5px rgba(24, 26, 26, 0.5);
   }
+
+/* Light mode links hover */
+body[data-theme="light"] .links ul li a:hover {
+    color: #2563eb;
+    text-shadow: 0px 0px 5px rgba(37, 99, 235, 0.2);
+  }
   
   /* Newsletter */
   .newsletter p {
     color: var(--text-secondary, #ccc);
+  }
+
+/* Light mode newsletter text */
+body[data-theme="light"] .newsletter p {
+    color: #666666;
   }
   
   .newsletter form {
@@ -83,6 +123,15 @@
     border-radius: 5px;
     margin-bottom: 10px;
     font-size: 1rem;
+    background: #2a2a2a;
+    color: white;
+  }
+
+/* Light mode newsletter input */
+body[data-theme="light"] .newsletter input {
+    background: #ffffff;
+    color: #333333;
+    border: 1px solid #d1d5db;
   }
   
   .newsletter button {
@@ -95,9 +144,21 @@
     border-radius: 5px;
     transition: 0.3s;
   }
+
+/* Light mode newsletter button */
+body[data-theme="light"] .newsletter button {
+    background: #2563eb;
+    color: white;
+  }
   
   .newsletter button:hover {
     background: #848889;
+    transform: scale(1.1);
+  }
+
+/* Light mode newsletter button hover */
+body[data-theme="light"] .newsletter button:hover {
+    background: #1d4ed8;
     transform: scale(1.1);
   }
   
@@ -108,5 +169,11 @@
     padding-top: 15px;
     font-size: 0.9rem;
     color: var(--text-secondary, #ccc);
+  }
+
+/* Light mode footer bottom */
+body[data-theme="light"] .footer-bottom {
+    border-top: 1px solid #e5e7eb;
+    color: #666666;
   }
   

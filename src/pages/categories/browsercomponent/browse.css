@@ -46,11 +46,22 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode body overrides */
+body[data-theme="light"] {
+  background-color: #ffffff;
+  color: #333333;
+}
+
 /* Container */
 .ui-container {
   display: flex;
   min-height: 100vh;
   width: 100%;
+}
+
+/* Light mode container */
+body[data-theme="light"] .ui-container {
+  background-color: #ffffff;
 }
 
 /* Sidebar */
@@ -68,6 +79,12 @@ body {
   box-shadow: 2px 0 10px var(--shadow);
 }
 
+/* Light mode sidebar */
+body[data-theme="light"] .sidebar {
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .sidebar-header {
   display: flex;
   justify-content: space-between;
@@ -80,6 +97,11 @@ body {
   color: var(--text-primary);
 }
 
+/* Light mode sidebar title */
+body[data-theme="light"] .sidebar-title {
+  color: #1a1a1a;
+}
+
 .theme-toggle-btn {
   background: transparent;
   border: none;
@@ -88,8 +110,18 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode theme toggle */
+body[data-theme="light"] .theme-toggle-btn {
+  color: #333333;
+}
+
 .theme-toggle-btn:hover {
   color: var(--accent-hover);
+}
+
+/* Light mode theme toggle hover */
+body[data-theme="light"] .theme-toggle-btn:hover {
+  color: #666666;
 }
 
 /* Sidebar items */
@@ -101,12 +133,25 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+/* Light mode sidebar items */
+body[data-theme="light"] .sidebar-item {
+  color: #333333;
 }
 
 .sidebar-item.active,
 .sidebar-item:hover {
   background-color: var(--bg-tertiary);
   color: var(--accent-hover);
+}
+
+/* Light mode sidebar items hover/active */
+body[data-theme="light"] .sidebar-item.active,
+body[data-theme="light"] .sidebar-item:hover {
+  background-color: #e9ecef;
+  color: #666666;
 }
 
 /* Main Content */
@@ -117,6 +162,11 @@ body {
   flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-primary);
+}
+
+/* Light mode main content */
+body[data-theme="light"] .main-content {
+  background-color: #ffffff;
 }
 
 /* Main Header */
@@ -131,6 +181,12 @@ body {
 .main-title {
   font-size: 32px;
   font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Light mode main title */
+body[data-theme="light"] .main-title {
+  color: #1a1a1a;
 }
 
 .main-actions {
@@ -151,6 +207,11 @@ body {
   color: var(--text-secondary);
 }
 
+/* Light mode search icon */
+body[data-theme="light"] .search-container svg {
+  color: #666666;
+}
+
 .search-input {
   padding: 10px 12px 10px 36px; /* left padding for icon */
   border-radius: 8px;
@@ -161,10 +222,23 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode search input */
+body[data-theme="light"] .search-input {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #333333;
+}
+
 .search-input:focus {
   outline: none;
   border-color: var(--accent-hover);
   box-shadow: 0 0 5px var(--shadow-hover);
+}
+
+/* Light mode search input focus */
+body[data-theme="light"] .search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.2);
 }
 
 /* Upload Button */
@@ -182,9 +256,22 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode upload button */
+body[data-theme="light"] .upload-button {
+  background-color: #f8f9fa;
+  color: #333333;
+  border: 1px solid #d1d5db;
+}
+
 .upload-button:hover {
   background-color: var(--accent-hover);
   color: var(--text-light);
+}
+
+/* Light mode upload button hover */
+body[data-theme="light"] .upload-button:hover {
+  background-color: #e9ecef;
+  color: #1a1a1a;
 }
 
 /* Components Grid */
@@ -274,11 +361,23 @@ body {
   color: var(--text-light); /* ensures text is readable */
 }
 
+/* Light mode component card */
+body[data-theme="light"] .component-card {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .component-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px var(--shadow-hover);
 }
 
+/* Light mode component card hover */
+body[data-theme="light"] .component-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
 
 /* Empty / Loading States */
 .loading-container,
@@ -292,6 +391,12 @@ body {
   color: var(--text-secondary);
 }
 
+/* Light mode loading/empty states */
+body[data-theme="light"] .loading-container,
+body[data-theme="light"] .empty-state {
+  color: #666666;
+}
+
 .empty-icon {
   font-size: 64px;
   margin-bottom: 20px;
@@ -303,6 +408,12 @@ body {
   padding: 15px 0;
   text-align: center;
   background-color: var(--bg-primary);
+}
+
+/* Light mode footer */
+body[data-theme="light"] .footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
 }
 
 /* Responsive */
@@ -343,10 +454,24 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode delete mode button */
+body[data-theme="light"] .delete-mode-button {
+  background: #f8f9fa;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .delete-mode-button:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
   border-color: var(--accent);
+}
+
+/* Light mode delete mode button hover */
+body[data-theme="light"] .delete-mode-button:hover {
+  background: #e9ecef;
+  color: #333333;
+  border-color: #2563eb;
 }
 
 .delete-mode-button.active {
@@ -417,6 +542,13 @@ body {
   backdrop-filter: blur(4px);
 }
 
+/* Light mode selection checkbox */
+body[data-theme="light"] .selection-checkbox {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  color: #333333;
+}
+
 .component-wrapper.selected .selection-checkbox {
   background: #dc2626;
   border-color: #dc2626;
@@ -447,6 +579,13 @@ body {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
+/* Light mode password modal */
+body[data-theme="light"] .password-modal {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
 .password-modal h3 {
   margin: 0 0 8px 0;
   color: var(--text-primary);
@@ -454,11 +593,21 @@ body {
   font-weight: 600;
 }
 
+/* Light mode password modal title */
+body[data-theme="light"] .password-modal h3 {
+  color: #1a1a1a;
+}
+
 .password-modal p {
   margin: 0 0 24px 0;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.5;
+}
+
+/* Light mode password modal text */
+body[data-theme="light"] .password-modal p {
+  color: #666666;
 }
 
 .password-input {
@@ -473,10 +622,23 @@ body {
   box-sizing: border-box;
 }
 
+/* Light mode password input */
+body[data-theme="light"] .password-input {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #333333;
+}
+
 .password-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(138, 110, 255, 0.2);
+}
+
+/* Light mode password input focus */
+body[data-theme="light"] .password-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .password-modal-actions {
@@ -497,9 +659,22 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode cancel button */
+body[data-theme="light"] .cancel-button {
+  background: #f8f9fa;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .cancel-button:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+/* Light mode cancel button hover */
+body[data-theme="light"] .cancel-button:hover {
+  background: #e9ecef;
+  color: #333333;
 }
 
 .submit-button {
@@ -514,8 +689,22 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode submit button */
+body[data-theme="light"] .submit-button {
+  background: #2563eb;
+  color: white;
+  border: 1px solid #2563eb;
+}
+
 .submit-button:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Light mode submit button hover */
+body[data-theme="light"] .submit-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
   transform: translateY(-1px);
 }

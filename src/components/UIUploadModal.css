@@ -24,6 +24,13 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* Light mode upload modal */
+body[data-theme="light"] .upload-modal {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
 .upload-modal-header {
   display: flex;
   justify-content: space-between;
@@ -34,11 +41,22 @@
   border-radius: 12px 12px 0 0;
 }
 
+/* Light mode upload modal header */
+body[data-theme="light"] .upload-modal-header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8f9fa;
+}
+
 .upload-modal-header h2 {
   margin: 0;
   color: white;
   font-size: 20px;
   font-weight: 600;
+}
+
+/* Light mode upload modal header title */
+body[data-theme="light"] .upload-modal-header h2 {
+  color: #1a1a1a;
 }
 
 .close-btn {
@@ -54,9 +72,20 @@
   justify-content: center;
 }
 
+/* Light mode close button */
+body[data-theme="light"] .close-btn {
+  color: #666666;
+}
+
 .close-btn:hover {
   background: #333;
   color: white;
+}
+
+/* Light mode close button hover */
+body[data-theme="light"] .close-btn:hover {
+  background: #e9ecef;
+  color: #333333;
 }
 
 .upload-form {
@@ -77,6 +106,11 @@
   font-size: 14px;
 }
 
+/* Light mode form group label */
+body[data-theme="light"] .form-group label {
+  color: #666666;
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {
@@ -91,12 +125,29 @@
   box-sizing: border-box;
 }
 
+/* Light mode form inputs */
+body[data-theme="light"] .form-group input,
+body[data-theme="light"] .form-group textarea,
+body[data-theme="light"] .form-group select {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #333333;
+}
+
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
   border-color: #8a6eff;
   box-shadow: 0 0 0 2px rgba(138, 110, 255, 0.2);
+}
+
+/* Light mode form inputs focus */
+body[data-theme="light"] .form-group input:focus,
+body[data-theme="light"] .form-group textarea:focus,
+body[data-theme="light"] .form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .form-group textarea {
@@ -117,11 +168,21 @@
   border-top: 1px solid #333;
 }
 
+/* Light mode code section */
+body[data-theme="light"] .code-section {
+  border-top: 1px solid #e5e7eb;
+}
+
 .code-section h3 {
   margin: 0 0 16px 0;
   color: white;
   font-size: 16px;
   font-weight: 600;
+}
+
+/* Light mode code section title */
+body[data-theme="light"] .code-section h3 {
+  color: #1a1a1a;
 }
 
 .form-actions {
@@ -131,6 +192,11 @@
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid #333;
+}
+
+/* Light mode form actions */
+body[data-theme="light"] .form-actions {
+  border-top: 1px solid #e5e7eb;
 }
 
 .cancel-btn,
@@ -152,9 +218,22 @@
   color: #ccc;
 }
 
+/* Light mode cancel button */
+body[data-theme="light"] .cancel-btn {
+  background: #f8f9fa;
+  color: #666666;
+  border: 1px solid #d1d5db;
+}
+
 .cancel-btn:hover {
   background: #444;
   color: white;
+}
+
+/* Light mode cancel button hover */
+body[data-theme="light"] .cancel-btn:hover {
+  background: #e9ecef;
+  color: #333333;
 }
 
 .upload-btn {
@@ -182,13 +261,28 @@
   background: #1a1a1a;
 }
 
+/* Light mode scrollbar track */
+body[data-theme="light"] .upload-modal::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
 .upload-modal::-webkit-scrollbar-thumb {
   background: #333;
   border-radius: 4px;
 }
 
+/* Light mode scrollbar thumb */
+body[data-theme="light"] .upload-modal::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
 .upload-modal::-webkit-scrollbar-thumb:hover {
   background: #444;
+}
+
+/* Light mode scrollbar thumb hover */
+body[data-theme="light"] .upload-modal::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 
 /* Styling toggle buttons */
@@ -199,6 +293,12 @@
   border: 1px solid #333;
   border-radius: 6px;
   padding: 4px;
+}
+
+/* Light mode styling toggle */
+body[data-theme="light"] .styling-toggle {
+  background: #f8f9fa;
+  border: 1px solid #d1d5db;
 }
 
 .toggle-btn {
@@ -218,8 +318,18 @@
   gap: 6px;
 }
 
+/* Light mode toggle button */
+body[data-theme="light"] .toggle-btn {
+  color: #666666;
+}
+
 .toggle-btn:hover {
   color: #ccc;
+}
+
+/* Light mode toggle button hover */
+body[data-theme="light"] .toggle-btn:hover {
+  color: #333333;
 }
 
 .toggle-btn.active {
@@ -241,10 +351,21 @@
   border-radius: 4px;
 }
 
+/* Light mode tailwind info */
+body[data-theme="light"] .tailwind-info {
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
 .tailwind-info small {
   color: #8a6eff;
   font-size: 12px;
   line-height: 1.4;
+}
+
+/* Light mode tailwind info text */
+body[data-theme="light"] .tailwind-info small {
+  color: #2563eb;
 }
 
 /* Responsive design */
