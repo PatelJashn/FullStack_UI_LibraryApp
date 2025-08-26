@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const BrowseAndAddSection = () => {
+  const navigate = useNavigate();
   const tags = [
     "button", "card", "form", "input", "label", "modal", "tooltip", "dropdown", "table", "checkbox",
     "radio", "switch", "avatar", "badge", "breadcrumb", "carousel", "pagination", "progress", "spinner", "tabs",
@@ -151,6 +153,7 @@ const BrowseAndAddSection = () => {
             }}
             onMouseEnter={(e) => (e.target.style.background = "#3a3b3a")}
             onMouseLeave={(e) => (e.target.style.background = "#282928")}
+            onClick={() => navigate('/upload')}
           >
             Add UI
           </button>
@@ -169,6 +172,7 @@ const BrowseAndAddSection = () => {
             }}
             onMouseEnter={(e) => (e.target.style.background = "#3a3b3a")}
             onMouseLeave={(e) => (e.target.style.background = "#282928")}
+            onClick={() => navigate('/categories')}
           >
             Explore Now
           </button>

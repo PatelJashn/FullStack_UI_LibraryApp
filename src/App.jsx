@@ -6,6 +6,7 @@ import Login from "./pages/loginpage/Login";
 import Browserfinal from "./pages/categories/Browserfinal";
 import ComponentDetail from "./pages/component-detail/ComponentDetail";
 import Signup from "./pages/signuppage/signup.jsx"; // Fixed capitalization
+import UploadPage from "./pages/upload/UploadPage";
 import { AuthProvider } from "./components/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 // import Showcase from "./pages/showcase/Showcasefinal"
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/component/:id" element={<ComponentDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
         <Footer /> {/* Footer always stays at the bottom */}
       </Router>

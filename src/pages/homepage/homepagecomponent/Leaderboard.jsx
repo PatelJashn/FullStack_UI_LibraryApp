@@ -134,6 +134,7 @@ const CommunitySection = () => {
             gap: "10px",
             fontWeight: "bold",
           }}
+          onClick={() => window.open('https://discord.gg/your-discord-invite', '_blank')}
         >
           <span style={{ fontSize: "20px" }}>💬</span> Join Discord
         </motion.button>
