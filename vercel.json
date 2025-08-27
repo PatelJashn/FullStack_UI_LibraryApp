@@ -1,8 +1,5 @@
 {
-  "buildCommand": "npm run build:prod",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
-  "env": {
-    "VITE_API_URL": "https://fullstack-ui-libraryapp.onrender.com"
-  }
+  "framework": "vite"
 }

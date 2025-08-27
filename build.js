@@ -2,7 +2,7 @@
 
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,13 +10,15 @@ const __dirname = dirname(__filename);
 try {
   console.log('Starting custom build script...');
   
-  // Try to run vite build using node directly
-  const vitePath = join(__dirname, 'node_modules', 'vite', 'bin', 'vite.js');
-  console.log('Vite path:', vitePath);
+  // Set production API URL for the build
+  process.env.VITE_API_URL = 'https://fullstack-ui-libraryapp.onrender.com';
+  console.log('Set VITE_API_URL to:', process.env.VITE_API_URL);
   
-  execSync(`node "${vitePath}" build`, { 
+  // Use npx to run vite build
+  execSync('npx vite build', { 
     stdio: 'inherit',
-    cwd: __dirname 
+    cwd: __dirname,
+    env: { ...process.env }
   });
   
   console.log('Build completed successfully!');

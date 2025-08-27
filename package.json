@@ -4,13 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "vite",
     "build": "node build.js",
     "build:standard": "vite build",
-    "build:prod": "node build-production.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
