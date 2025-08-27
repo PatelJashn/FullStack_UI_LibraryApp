@@ -10,3 +10,7 @@ A comprehensive UI component library with authentication and MongoDB integration
 ## Environment Variables
 - VITE_API_URL: https://fullstack-ui-libraryapp.onrender.com
 
+## Latest Update
+- Fixed build process to use environment variables correctly
+- Simplified build command to avoid permission issues
+
