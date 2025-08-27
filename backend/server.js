@@ -18,6 +18,7 @@ app.use(cors({
     "https://uiforge.vercel.app", // Your Vercel domain
     "https://uiforge-git-main-pateljashn.vercel.app", // Your Vercel preview domain
     "https://fullstack-ui-libraryapp.vercel.app", // Alternative Vercel domain
+    "https://*.vercel.app", // Allow all Vercel preview domains
     process.env.FRONTEND_URL // Allow environment variable override
   ].filter(Boolean), 
   credentials: true 
@@ -48,7 +49,10 @@ app.get("/health", (req, res) => {
   res.json({
     status: "Server is running",
     mongodb: mongoose.connection.readyState === 1 ? "Connected" : "Not connected",
+    mongodbState: mongoose.connection.readyState,
+    mongoUri: process.env.MONGO_URI ? "Set" : "Not set",
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development"
   });
 });
 

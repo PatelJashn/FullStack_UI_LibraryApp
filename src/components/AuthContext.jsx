@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { createApiUrl, API_ENDPOINTS } from "../config/api.js";
 
 const AuthContext = createContext();
 
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyToken = async (tokenToVerify) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/auth/profile`, {
+      const response = await fetch(createApiUrl(API_ENDPOINTS.PROFILE), {
         headers: {
           "Authorization": `Bearer ${tokenToVerify}`,
           "Content-Type": "application/json"
