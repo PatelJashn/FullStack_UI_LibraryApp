@@ -3,7 +3,13 @@
 
 // Get the API URL from environment variable or use a default
 const getApiUrl = () => {
-  // In production (Vercel), this should be set via environment variable
+  // Check if we're in production (Vercel)
+  if (import.meta.env.PROD) {
+    // Hardcode the production URL for Vercel
+    return 'https://fullstack-ui-libraryapp.onrender.com';
+  }
+  
+  // Check environment variable first
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
