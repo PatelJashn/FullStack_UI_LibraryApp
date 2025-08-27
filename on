@@ -1,0 +1,5 @@
+[33m36e03ab[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix: Update Node.js version and simplify build process for Vercel deployment
+[33mf746ce7[m Fix: Configure Vercel deployment with correct API URL and force rebuild
+[33ma5f20a3[m Added Mobile Responsiveness
+[33m45adadd[m LightMode Improvements
+[33m4f8ffe2[m LightMode Imrpovements
