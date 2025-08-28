@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Homepage from "./homepagecomponent/Homepage"
+import Homepage from "./homepagecomponent/Homepage.jsx"
 import Box1 from "./homepagecomponent/Box1";
 import Box2 from "./homepagecomponent/Box2";
 import Box3 from "./homepagecomponent/Box3";
