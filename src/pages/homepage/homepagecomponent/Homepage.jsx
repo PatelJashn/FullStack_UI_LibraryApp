@@ -3,6 +3,14 @@ import { useTheme } from "../../../components/ThemeContext";
 
 const Part = () => {
   const { isDarkMode } = useTheme();
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Add your search logic here
+    console.log('Searching for:', searchQuery);
+    // You can implement navigation to search results or filter components here
+  };
 
   const containerStyle = {
     fontSize: window.innerWidth <= 768 ? "24px" : "40px",
@@ -46,7 +54,8 @@ const Part = () => {
     backgroundColor: isDarkMode ? "#f8fafc" : "#FAF9F6",
     color: isDarkMode ? "#482d35" : "#2d3748",
     outline: "none",
-    width: window.innerWidth <= 768 ? "100%" : "auto",
+    width: window.innerWidth <= 768 ? "100%" : "600px",
+    minWidth: "500px",
   };
 
   const placeholderStyle = {
@@ -56,9 +65,12 @@ const Part = () => {
 
   const iconStyle = {
     position: "absolute",
-    marginLeft: window.innerWidth <= 768 ? "12px" : "16px",
+    left: window.innerWidth <= 768 ? "12px" : "16px",
+    top: "50%",
+    transform: "translateY(-50%)",
     color: isDarkMode ? "#718096" : "#666666",
     pointerEvents: "none",
+    zIndex: 1,
   };
 
   const buttonStyle = {
@@ -85,7 +97,7 @@ const Part = () => {
       <p style={paragraphStyle}>Community-built library of UI elements.</p>
       <p style={paragraphStyle}>Copy as HTML/CSS, Tailwind, React and Figma</p>
 
-      <form style={searchBarStyle}>
+      <form style={searchBarStyle} onSubmit={handleSearch}>
         <div style={{ position: "relative", width: "100%" }}>
           <input
             type="text"
@@ -93,6 +105,8 @@ const Part = () => {
             id="search"
             placeholder="Search for components, styles, creators..."
             style={inputStyle}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
