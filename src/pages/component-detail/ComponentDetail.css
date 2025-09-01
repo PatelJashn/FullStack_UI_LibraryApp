@@ -94,6 +94,85 @@ body[data-theme="light"] .back-button:hover {
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  align-items: center;
+}
+
+.author-info {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Owner Actions */
+.owner-actions {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.action-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.edit-button {
+  background: #3b82f6;
+  color: white;
+}
+
+.edit-button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.delete-button {
+  background: #ef4444;
+  color: white;
+}
+
+.delete-button:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.save-button {
+  background: #10b981;
+  color: white;
+}
+
+.save-button:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.cancel-button {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.cancel-button:hover {
+  background: var(--bg-card);
+  transform: translateY(-1px);
+}
+
+/* Light mode action buttons */
+body[data-theme="light"] .cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+body[data-theme="light"] .cancel-button:hover {
+  background: #e5e7eb;
 }
 
 .category-tag {

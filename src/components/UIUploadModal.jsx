@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { X, Upload, Code, FileText, Tag, Palette } from 'lucide-react';
+import { useAuth } from './AuthContext';
 import './UIUploadModal.css';
 
 const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
+  const { token, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     category: 'All',
     html: '',
@@ -48,6 +50,7 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(componentData),
       });
@@ -65,7 +68,11 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
         });
       } else {
         const error = await response.json();
-        alert('Error uploading component: ' + error.message);
+        if (response.status === 401) {
+          alert('Please log in to upload components');
+        } else {
+          alert('Error uploading component: ' + error.message);
+        }
       }
     } catch (error) {
       alert('Error uploading component: ' + error.message);

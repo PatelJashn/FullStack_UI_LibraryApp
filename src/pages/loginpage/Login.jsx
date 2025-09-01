@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import { useTheme } from "../../components/ThemeContext";
+import GoogleSignIn from "../../components/GoogleSignIn";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -114,6 +115,22 @@ const Login = () => {
       fontWeight: "bold",
       transition: "0.3s",
     },
+    divider: {
+      display: "flex",
+      alignItems: "center",
+      margin: window.innerWidth <= 768 ? "20px 0" : "25px 0",
+      color: isDarkMode ? "#aaa" : "#666666",
+      fontSize: window.innerWidth <= 768 ? "13px" : "14px",
+    },
+    dividerLine: {
+      flex: 1,
+      height: "1px",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "#d1d5db",
+    },
+    dividerText: {
+      padding: "0 15px",
+      fontWeight: "500",
+    },
     signupText: {
       marginTop: window.innerWidth <= 768 ? "12px" : "15px",
       fontSize: window.innerWidth <= 768 ? "13px" : "14px",
@@ -219,6 +236,17 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        {/* Divider */}
+        <div style={styles.divider}>
+          <div style={styles.dividerLine}></div>
+          <span style={styles.dividerText}>or</span>
+          <div style={styles.dividerLine}></div>
+        </div>
+
+        {/* Google Sign-In */}
+        <GoogleSignIn disabled={loading} />
+
         <p style={styles.signupText}>
           Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
         </p>

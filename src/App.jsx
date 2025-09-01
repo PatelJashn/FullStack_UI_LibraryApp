@@ -7,6 +7,7 @@ import Browserfinal from "./pages/categories/Browserfinal";
 import ComponentDetail from "./pages/component-detail/ComponentDetail";
 import Signup from "./pages/signuppage/signup.jsx"; // Fixed capitalization
 import UploadPage from "./pages/upload/UploadPage";
+import AuthCallback from "./pages/auth-callback/AuthCallback";
 import { AuthProvider } from "./components/AuthContext";
 import { ThemeProvider } from "./components/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/upload" element={<UploadPage />} />
+            <Route path="/auth-callback" element={<AuthCallback />} />
           </Routes>
           <Footer /> {/* Footer always stays at the bottom */}
         </Router>

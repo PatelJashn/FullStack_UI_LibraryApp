@@ -11,7 +11,10 @@
     "build": "vite build",
     "build:standard": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:oauth": "node test-google-oauth.js",
+    "setup:google": "node setup-google-oauth.js",
+    "create:env": "node rename-env.js"
   },
   "dependencies": {
     "dotenv": "^17.2.1",

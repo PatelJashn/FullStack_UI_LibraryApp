@@ -1,15 +1,62 @@
 import express from "express";
 import mongoose from "mongoose";
 import UIComponent from "../models/UIComponent.js";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 const router = express.Router();
+
+// Authentication middleware
+const authenticateToken = async (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+// Optional authentication middleware (for routes that work with or without auth)
+const optionalAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id).select('-password');
+      if (user) {
+        req.user = user;
+      }
+    }
+    next();
+  } catch (error) {
+    // Continue without authentication
+    next();
+  }
+};
 
 // In-memory store for UI components when MongoDB is not connected
 const localComponents = new Map();
 let componentIdCounter = 1;
 
 // Get all UI components (with optional filtering)
-router.get("/", async (req, res) => {
+router.get("/", optionalAuth, async (req, res) => {
   try {
     const { category, search, page = 1, limit = 12 } = req.query;
     
@@ -98,7 +145,7 @@ router.get("/", async (req, res) => {
         totalPages: category && category !== 'All' ? Math.ceil(total / limit) : 1,
         currentPage: parseInt(page),
         total,
-        message: "Using local storage - components will be lost on server restart"
+        user: req.user || null
       });
     }
 
@@ -107,99 +154,101 @@ router.get("/", async (req, res) => {
     
     let query = { isPublic: true };
     
-    // Filter by category - ONLY if category is specified AND not "All"
+    // Filter by category
     if (category && category !== 'All') {
       query.category = category;
-      console.log(`📊 MongoDB query with category filter: ${category}`);
-    } else {
-      console.log(`📊 MongoDB query without category filter - showing all components`);
     }
     
     // Search functionality
     if (search) {
       query.$text = { $search: search };
-      console.log(`📊 MongoDB query with search: ${search}`);
     }
     
     const total = await UIComponent.countDocuments(query);
-    console.log(`📊 MongoDB total documents matching query: ${total}`);
+    const skip = (page - 1) * limit;
     
-    // For "All" category, return ALL components without pagination
-    let components;
-    if (category && category !== 'All') {
-      // Only apply pagination for specific categories
-      const skip = (page - 1) * limit;
-      components = await UIComponent.find(query)
-        .populate('author', 'username fullName')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit));
-      console.log(`📊 MongoDB paginated result: ${components.length} components (page ${page})`);
-    } else {
-      // Return all components without pagination for "All" category
-      components = await UIComponent.find(query)
-        .populate('author', 'username fullName')
-        .sort({ createdAt: -1 });
-      console.log(`📊 MongoDB all components result: ${components.length} components`);
-      
-      // Separate forms from other components
-      const forms = components.filter(comp => comp.category === "Forms");
-      const nonForms = components.filter(comp => comp.category !== "Forms");
-      
-      // Shuffle non-form components randomly
-      const shuffledNonForms = shuffleArray(nonForms);
-      
-      // Combine: shuffled non-forms first, then forms at the end
-      components = [...shuffledNonForms, ...forms];
-      
-      console.log(`📊 After random shuffle: ${shuffledNonForms.length} non-forms + ${forms.length} forms = ${components.length} total`);
-    }
+    let components = await UIComponent.find(query)
+      .populate('author', 'fullName username profilePic')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    // Separate forms from other components
+    const forms = components.filter(comp => comp.category === "Forms");
+    const nonForms = components.filter(comp => comp.category !== "Forms");
+    
+    // Shuffle non-form components randomly
+    const shuffledNonForms = shuffleArray(nonForms);
+    
+    // Combine: shuffled non-forms first, then forms at the end
+    components = [...shuffledNonForms, ...forms];
     
     console.log(`✅ MongoDB response: ${components.length} components for category: ${category || 'All'}`);
     
     res.json({
       components,
-      totalPages: category && category !== 'All' ? Math.ceil(total / limit) : 1,
+      totalPages: Math.ceil(total / limit),
       currentPage: parseInt(page),
-      total
+      total,
+      user: req.user || null
     });
   } catch (error) {
-    console.error('❌ Error in GET /api/ui-components:', error);
+    console.error("Error fetching components:", error);
     res.status(500).json({ message: "Error fetching components", error: error.message });
   }
 });
 
-// Get a single UI component by ID
-router.get("/:id", async (req, res) => {
+// Get a single component by ID
+router.get("/:id", optionalAuth, async (req, res) => {
   try {
+    const { id } = req.params;
+    
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      // Use local storage - check both id and _id
-      const component = localComponents.get(req.params.id) || localComponents.get(req.params.id);
+      // Use local storage
+      const component = localComponents.get(id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
       }
-      return res.json(component);
+      
+      // Add user ownership info
+      const componentWithOwnership = {
+        ...component,
+        isOwner: req.user && component.author === req.user._id,
+        canEdit: req.user && component.author === req.user._id,
+        canDelete: req.user && component.author === req.user._id
+      };
+      
+      return res.json(componentWithOwnership);
     }
 
     // MongoDB is connected - use database
-    const component = await UIComponent.findById(req.params.id)
-      .populate('author', 'username fullName');
+    const component = await UIComponent.findById(id)
+      .populate('author', 'fullName username profilePic');
     
     if (!component) {
       return res.status(404).json({ message: "Component not found" });
     }
     
-    res.json(component);
+    // Add user ownership info
+    const componentWithOwnership = {
+      ...component.toObject(),
+      isOwner: req.user && component.author._id.toString() === req.user._id.toString(),
+      canEdit: req.user && component.author._id.toString() === req.user._id.toString(),
+      canDelete: req.user && component.author._id.toString() === req.user._id.toString()
+    };
+    
+    res.json(componentWithOwnership);
   } catch (error) {
+    console.error("Error fetching component:", error);
     res.status(500).json({ message: "Error fetching component", error: error.message });
   }
 });
 
-// Create a new UI component
-router.post("/", async (req, res) => {
+// Create a new UI component (requires authentication)
+router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { title, description, category, code, tags, authorId } = req.body;
+    const { title, description, category, code, tags, useTailwind } = req.body;
     
     // Validate required fields
     if (!title || !description || !category || !code) {
@@ -216,7 +265,7 @@ router.post("/", async (req, res) => {
     }
 
     // CSS is only required when not using Tailwind
-    if (!code.css && !req.body.useTailwind) {
+    if (!code.css && !useTailwind) {
       return res.status(400).json({ 
         message: "CSS code is required when not using Tailwind" 
       });
@@ -230,8 +279,9 @@ router.post("/", async (req, res) => {
       category,
       code,
       tags: tags || [],
-      useTailwind: req.body.useTailwind || false,
-      author: authorId || "local-user",
+      useTailwind: useTailwind || false,
+      author: req.user._id.toString(), // Use authenticated user's ID
+      authorName: req.user.fullName, // Store author name for local storage
       isPublic: true,
       likes: [],
       downloads: 0,
@@ -252,16 +302,16 @@ router.post("/", async (req, res) => {
         category,
         code,
         tags: tags || [],
-        useTailwind: req.body.useTailwind || false,
-        author: authorId || "507f1f77bcf86cd799439011" // Placeholder
+        useTailwind: useTailwind || false,
+        author: req.user._id // Use authenticated user's ID
       });
       await mongoComponent.save();
-      console.log(`✅ New UI component saved to MongoDB: ${title}`);
+      console.log(`✅ New UI component saved to MongoDB: ${title} by ${req.user.email}`);
     } else {
-      console.log(`✅ New UI component saved locally: ${title} (Total: ${localComponents.size / 2})`);
+      console.log(`✅ New UI component saved locally: ${title} by ${req.user.email} (Total: ${localComponents.size / 2})`);
     }
 
-    console.log(`✅ New UI component created: ${title}`);
+    console.log(`✅ New UI component created: ${title} by ${req.user.email}`);
     res.status(201).json(newComponent);
   } catch (error) {
     console.error("Error creating component:", error);
@@ -269,82 +319,116 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a UI component
-router.put("/:id", async (req, res) => {
+// Update a UI component (requires authentication and ownership)
+router.put("/:id", authenticateToken, async (req, res) => {
   try {
+    const { id } = req.params;
+    
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
       // Use local storage
-      const component = localComponents.get(req.params.id);
+      const component = localComponents.get(id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
       }
       
+      // Check ownership
+      if (component.author !== req.user._id.toString()) {
+        return res.status(403).json({ message: "You can only edit your own components" });
+      }
+      
       // Update component
       Object.assign(component, req.body, { updatedAt: new Date() });
-      localComponents.set(req.params.id, component);
+      localComponents.set(id, component);
       
+      console.log(`✅ Component updated locally: ${component.title} by ${req.user.email}`);
       return res.json(component);
     }
 
     // MongoDB is connected - use database
-    const updatedComponent = await UIComponent.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const component = await UIComponent.findById(id);
     
-    if (!updatedComponent) {
+    if (!component) {
       return res.status(404).json({ message: "Component not found" });
     }
     
+    // Check ownership
+    if (component.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "You can only edit your own components" });
+    }
+    
+    const updatedComponent = await UIComponent.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true, runValidators: true }
+    ).populate('author', 'fullName username profilePic');
+    
+    console.log(`✅ Component updated in MongoDB: ${updatedComponent.title} by ${req.user.email}`);
     res.json(updatedComponent);
   } catch (error) {
+    console.error("Error updating component:", error);
     res.status(400).json({ message: "Error updating component", error: error.message });
   }
 });
 
-// Delete a UI component
-router.delete("/:id", async (req, res) => {
+// Delete a UI component (requires authentication and ownership)
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
+    const { id } = req.params;
+    
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      // Use local storage - check both id and _id
-      const component = localComponents.get(req.params.id) || localComponents.get(req.params.id);
+      // Use local storage
+      const component = localComponents.get(id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
+      }
+      
+      // Check ownership
+      if (component.author !== req.user._id.toString()) {
+        return res.status(403).json({ message: "You can only delete your own components" });
       }
       
       // Delete from both id and _id keys
       localComponents.delete(component.id);
       localComponents.delete(component._id);
-      console.log(`🗑️ Component deleted from local storage: ${component.title}`);
+      console.log(`🗑️ Component deleted from local storage: ${component.title} by ${req.user.email}`);
       
       return res.json({ message: "Component deleted successfully" });
     }
 
     // MongoDB is connected - use database
-    const deletedComponent = await UIComponent.findByIdAndDelete(req.params.id);
+    const component = await UIComponent.findById(id);
     
-    if (!deletedComponent) {
+    if (!component) {
       return res.status(404).json({ message: "Component not found" });
     }
     
+    // Check ownership
+    if (component.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "You can only delete your own components" });
+    }
+    
+    await UIComponent.findByIdAndDelete(id);
+    console.log(`🗑️ Component deleted from MongoDB: ${component.title} by ${req.user.email}`);
+    
     res.json({ message: "Component deleted successfully" });
   } catch (error) {
+    console.error("Error deleting component:", error);
     res.status(500).json({ message: "Error deleting component", error: error.message });
   }
 });
 
-// Like/Unlike a component
-router.post("/:id/like", async (req, res) => {
+// Like/Unlike a component (requires authentication)
+router.post("/:id/like", authenticateToken, async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { id } = req.params;
+    const userId = req.user._id.toString();
     
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
       // Use local storage
-      const component = localComponents.get(req.params.id);
+      const component = localComponents.get(id);
       if (!component) {
         return res.status(404).json({ message: "Component not found" });
       }
@@ -360,13 +444,13 @@ router.post("/:id/like", async (req, res) => {
       }
       
       component.updatedAt = new Date();
-      localComponents.set(req.params.id, component);
+      localComponents.set(id, component);
       
       return res.json(component);
     }
 
     // MongoDB is connected - use database
-    const component = await UIComponent.findById(req.params.id);
+    const component = await UIComponent.findById(id);
     
     if (!component) {
       return res.status(404).json({ message: "Component not found" });
@@ -385,6 +469,7 @@ router.post("/:id/like", async (req, res) => {
     await component.save();
     res.json(component);
   } catch (error) {
+    console.error("Error updating likes:", error);
     res.status(500).json({ message: "Error updating likes", error: error.message });
   }
 });
@@ -424,8 +509,8 @@ router.post("/:id/download", async (req, res) => {
   }
 });
 
-// AI-powered code modification
-router.post("/:id/ai-modify", async (req, res) => {
+// AI-powered code modification (requires authentication)
+router.post("/:id/ai-modify", authenticateToken, async (req, res) => {
   try {
     const { prompt } = req.body;
     

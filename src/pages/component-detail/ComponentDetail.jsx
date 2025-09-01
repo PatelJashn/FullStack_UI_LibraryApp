@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Copy, Check, ArrowLeft, Code, Eye, Download, Send, Sparkles, Save } from "lucide-react";
+import { Copy, Check, ArrowLeft, Code, Eye, Download, Send, Sparkles, Save, Edit, Trash2 } from "lucide-react";
+import { useAuth } from "../../components/AuthContext";
 import "./ComponentDetail.css";
 
 const ComponentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { token, user } = useAuth();
   const [component, setComponent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState({ html: false, css: false });
@@ -86,6 +88,7 @@ const ComponentDetail = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ prompt: aiPrompt })
       });
@@ -120,6 +123,45 @@ const ComponentDetail = () => {
     setShowModified(false);
   };
 
+
+
+  const handleCancelEdit = () => {
+    setEditableHtml(component.code?.html || "");
+    setEditableCss(component.code?.css || "");
+    setIsEditing(false);
+  };
+
+  const handleDeleteComponent = async () => {
+    if (!confirm('Are you sure you want to delete this component? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        alert('Component deleted successfully!');
+        navigate('/categories');
+      } else {
+        const error = await response.json();
+        if (response.status === 403) {
+          alert('You can only delete your own components');
+        } else {
+          alert('Error deleting component: ' + error.message);
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting component:', error);
+      alert('Error deleting component: ' + error.message);
+    }
+  };
+
   const handleSaveChanges = async () => {
     if (!component) return;
     
@@ -138,16 +180,23 @@ const ComponentDetail = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedComponent)
       });
 
       if (response.ok) {
-        setComponent(updatedComponent);
+        const savedComponent = await response.json();
+        setComponent(savedComponent);
         setIsEditing(false);
         alert("Changes saved successfully!");
       } else {
-        throw new Error('Failed to save changes');
+        const error = await response.json();
+        if (response.status === 403) {
+          alert('You can only edit your own components');
+        } else {
+          throw new Error(error.message || 'Failed to save changes');
+        }
       }
     } catch (error) {
       console.error('Error saving changes:', error);
@@ -155,12 +204,6 @@ const ComponentDetail = () => {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleCancelEdit = () => {
-    setEditableHtml(component.code?.html || "");
-    setEditableCss(component.code?.css || "");
-    setIsEditing(false);
   };
 
   if (loading) {
@@ -187,19 +230,63 @@ const ComponentDetail = () => {
 
   return (
     <div className="component-detail-container">
-      {/* Header */}
-      <div className="detail-header">
-        <button onClick={() => navigate("/categories")} className="back-button">
-          <ArrowLeft size={20} />
-          Back to Categories
-        </button>
-        <div className="header-info">
-          <h1>{component.title}</h1>
-          <div className="component-meta">
-            <span className="category-tag">{component.category}</span>
-          </div>
-        </div>
-      </div>
+             {/* Header */}
+       <div className="detail-header">
+         <button onClick={() => navigate("/categories")} className="back-button">
+           <ArrowLeft size={20} />
+           Back to Categories
+         </button>
+         <div className="header-info">
+           <h1>{component.title}</h1>
+           <div className="component-meta">
+             <span className="category-tag">{component.category}</span>
+             {component.author && (
+               <span className="author-info">by {component.author.fullName || component.authorName || 'Unknown'}</span>
+             )}
+           </div>
+         </div>
+         {/* Owner Actions */}
+         {component.isOwner && (
+           <div className="owner-actions">
+             {isEditing ? (
+               <>
+                 <button 
+                   className="action-button save-button"
+                   onClick={handleSaveChanges}
+                   disabled={isSaving}
+                 >
+                   <Save size={16} />
+                   {isSaving ? 'Saving...' : 'Save'}
+                 </button>
+                 <button 
+                   className="action-button cancel-button"
+                   onClick={handleCancelEdit}
+                   disabled={isSaving}
+                 >
+                   Cancel
+                 </button>
+               </>
+             ) : (
+               <>
+                 <button 
+                   className="action-button edit-button"
+                   onClick={() => setIsEditing(true)}
+                 >
+                   <Edit size={16} />
+                   Edit
+                 </button>
+                 <button 
+                   className="action-button delete-button"
+                   onClick={handleDeleteComponent}
+                 >
+                   <Trash2 size={16} />
+                   Delete
+                 </button>
+               </>
+             )}
+           </div>
+         )}
+       </div>
 
       {/* Main Content Layout */}
       <div className="detail-content">
@@ -285,9 +372,18 @@ const ComponentDetail = () => {
                     </button>
                   </div>
                 </div>
-                <pre className="code-block html-code">
-                  <code>{(showModified ? modifiedComponent : component)?.code?.html || ''}</code>
-                </pre>
+                {isEditing ? (
+                  <textarea
+                    className="code-editor html-editor"
+                    value={editableHtml}
+                    onChange={(e) => setEditableHtml(e.target.value)}
+                    placeholder="Enter HTML code..."
+                  />
+                ) : (
+                  <pre className="code-block html-code">
+                    <code>{(showModified ? modifiedComponent : component)?.code?.html || ''}</code>
+                  </pre>
+                )}
               </div>
             )}
 
@@ -304,9 +400,18 @@ const ComponentDetail = () => {
                     </button>
                   </div>
                 </div>
-                <pre className="code-block css-code">
-                  <code>{(showModified ? modifiedComponent : component)?.useTailwind ? (showModified ? modifiedComponent : component)?.code?.html || '' : (showModified ? modifiedComponent : component)?.code?.css || ''}</code>
-                </pre>
+                {isEditing ? (
+                  <textarea
+                    className="code-editor css-editor"
+                    value={editableCss}
+                    onChange={(e) => setEditableCss(e.target.value)}
+                    placeholder="Enter CSS code..."
+                  />
+                ) : (
+                  <pre className="code-block css-code">
+                    <code>{(showModified ? modifiedComponent : component)?.useTailwind ? (showModified ? modifiedComponent : component)?.code?.html || '' : (showModified ? modifiedComponent : component)?.code?.css || ''}</code>
+                  </pre>
+                )}
               </div>
             )}
 

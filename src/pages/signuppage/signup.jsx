@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../../components/ThemeContext";
+import GoogleSignIn from "../../components/GoogleSignIn";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -160,6 +161,29 @@ const Signup = () => {
       background: isDarkMode ? "rgba(81, 207, 102, 0.1)" : "rgba(81, 207, 102, 0.05)",
       borderRadius: "6px",
       border: "1px solid rgba(81, 207, 102, 0.3)",
+    },
+    divider: {
+      display: "flex",
+      alignItems: "center",
+      margin: window.innerWidth <= 768 ? "20px 0" : "25px 0",
+      position: "relative",
+    },
+    dividerLine: {
+      flex: 1,
+      height: "1px",
+      background: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "#d1d5db",
+    },
+    dividerText: {
+      background: isDarkMode ? "rgba(255, 255, 255, 0.1)" : "#FAF9F6",
+      color: isDarkMode ? "#bbb" : "#666666",
+      fontSize: window.innerWidth <= 768 ? "12px" : "14px",
+      fontWeight: "500",
+      padding: "0 15px",
+      position: "relative",
+      zIndex: "1",
+    },
+    googleSection: {
+      marginBottom: window.innerWidth <= 768 ? "15px" : "20px",
     },
   };
 
@@ -325,6 +349,18 @@ const Signup = () => {
             {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
+
+        {/* Divider */}
+        <div style={styles.divider}>
+          <div style={styles.dividerLine}></div>
+          <span style={styles.dividerText}>or</span>
+          <div style={styles.dividerLine}></div>
+        </div>
+
+        {/* Google Sign In */}
+        <div style={styles.googleSection}>
+          <GoogleSignIn disabled={loading} />
+        </div>
         <p style={styles.signupText}>
           Already have an account? <Link to="/login" style={styles.link}>Login</Link>
         </p>
