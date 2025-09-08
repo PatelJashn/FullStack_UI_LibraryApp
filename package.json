@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:oauth": "node test-google-oauth.js",
+    "test:oauth:complete": "node test-google-oauth-complete.js",
     "setup:google": "node setup-google-oauth.js",
+    "setup:google:complete": "node setup-google-oauth-complete.js",
     "create:env": "node rename-env.js"
   },
   "dependencies": {
