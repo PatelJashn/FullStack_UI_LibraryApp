@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';  
 import symbol from '../../assets/Symbol.png';
 import './navbar.css';
-import { useAuth } from '../AuthContext';
+import { useAppwriteAuth } from '../AppwriteAuthContext';
 import { useTheme } from '../ThemeContext';
 
 const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAppwriteAuth();
   const { isDarkMode, toggleTheme } = useTheme();
 
   const handleLogout = () => {
@@ -76,9 +76,9 @@ const Navbar = () => {
                 color: '#fff',
                 fontWeight: '500'
               }}>
-                {user?.profilePic && (
+                {user?.avatar && (
                   <img 
-                    src={user.profilePic} 
+                    src={user.avatar} 
                     alt="profile" 
                     style={{
                       width: 32, 
@@ -91,7 +91,7 @@ const Navbar = () => {
                   />
                 )}
                 <span style={{ fontSize: '14px' }}>
-                  Welcome, {user?.fullName || user?.username || 'User'}
+                  Welcome, {user?.name || user?.username || 'User'}
                 </span>
               </li>
               <li className='tab' id='logout'>
