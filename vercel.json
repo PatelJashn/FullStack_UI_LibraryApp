@@ -1,6 +1,8 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "buildCommand": "chmod +x node_modules/.bin/vite || true && vite build",
+  "outputDirectory": "dist",
+  "devCommand": "vite",
+  "startCommand": "vite preview"
 }
