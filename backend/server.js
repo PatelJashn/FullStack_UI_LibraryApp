@@ -13,12 +13,32 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://uiforge.vercel.app",
-      "https://fullstack-ui-libraryapp.vercel.app",
-      process.env.FRONTEND_URL,
-    ].filter(Boolean),
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, Postman, or curl)
+      if (!origin) return callback(null, true);
+      
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:5174",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+        "https://uiforge.vercel.app",
+        "https://fullstack-ui-libraryapp.vercel.app",
+        process.env.FRONTEND_URL,
+      ].filter(Boolean);
+      
+      // In development, allow all localhost origins
+      if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+        return callback(null, true);
+      }
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );

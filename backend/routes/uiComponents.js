@@ -33,22 +33,41 @@ const authenticateToken = async (req, res, next) => {
 
 // Optional authentication middleware (for routes that work with or without auth)
 const optionalAuth = async (req, res, next) => {
+  // Always set req.user to null initially
+  req.user = null;
+  
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select('-password');
-      if (user) {
-        req.user = user;
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+        if (decoded && decoded.id) {
+          const user = await User.findById(decoded.id).select('-password');
+          if (user) {
+            req.user = user;
+            console.log(`✅ Authenticated user: ${user.email}`);
+          } else {
+            console.log("⚠️  User not found for token, continuing as anonymous");
+          }
+        }
+      } catch (tokenError) {
+        // Token is invalid/expired - silently ignore and continue without auth
+        // Don't log this as an error, it's expected for anonymous users
+        req.user = null;
       }
+    } else {
+      console.log("ℹ️  No token provided, proceeding as anonymous user");
     }
-    next();
   } catch (error) {
-    // Continue without authentication
-    next();
+    // Continue without authentication on any error
+    console.log("⚠️  Auth middleware error (continuing as anonymous):", error.message);
+    req.user = null;
   }
+  
+  // Always call next() - never block the request
+  next();
 };
 
 // In-memory store for UI components when MongoDB is not connected
@@ -245,8 +264,8 @@ router.get("/:id", optionalAuth, async (req, res) => {
   }
 });
 
-// Create a new UI component (requires authentication)
-router.post("/", authenticateToken, async (req, res) => {
+// Create a new UI component (authentication optional)
+router.post("/", optionalAuth, async (req, res) => {
   try {
     const { title, description, category, code, tags, useTailwind } = req.body;
     
@@ -271,17 +290,81 @@ router.post("/", authenticateToken, async (req, res) => {
       });
     }
 
+    // Use authenticated user info if available, otherwise use anonymous
+    const authorId = req.user ? req.user._id.toString() : "anonymous";
+    const authorName = req.user ? req.user.fullName : "Anonymous";
+    const authorEmail = req.user ? req.user.email : "anonymous@example.com";
+
+    let savedComponent;
+    let componentId;
+
+    // ALWAYS try to save to MongoDB first (primary storage)
+    if (mongoose.connection.readyState === 1) {
+      try {
+        console.log(`💾 Saving component to MongoDB: ${title}`);
+        const mongoComponent = new UIComponent({
+          title,
+          description,
+          category,
+          code,
+          tags: tags || [],
+          useTailwind: useTailwind || false,
+          author: req.user ? req.user._id : null // null for anonymous users
+        });
+        
+        savedComponent = await mongoComponent.save();
+        componentId = savedComponent._id.toString();
+        
+        console.log(`✅ Component saved to MongoDB successfully! ID: ${componentId}`);
+        
+        // Convert MongoDB document to plain object for response
+        const componentResponse = {
+          _id: savedComponent._id.toString(),
+          id: savedComponent._id.toString(),
+          title: savedComponent.title,
+          description: savedComponent.description,
+          category: savedComponent.category,
+          code: savedComponent.code,
+          tags: savedComponent.tags || [],
+          useTailwind: savedComponent.useTailwind || false,
+          author: savedComponent.author ? savedComponent.author.toString() : "anonymous",
+          authorName: authorName,
+          isPublic: savedComponent.isPublic !== false,
+          likes: savedComponent.likes || [],
+          downloads: savedComponent.downloads || 0,
+          createdAt: savedComponent.createdAt,
+          updatedAt: savedComponent.updatedAt
+        };
+        
+        // Also store in local cache for faster access
+        localComponents.set(componentId, componentResponse);
+        
+        console.log(`✅ New UI component saved to MongoDB: ${title} by ${authorEmail} (ID: ${componentId})`);
+        return res.status(201).json(componentResponse);
+        
+      } catch (mongoError) {
+        console.error("❌ CRITICAL: Error saving to MongoDB:", mongoError.message);
+        console.error("❌ MongoDB error details:", mongoError);
+        // If MongoDB save fails, fall back to local storage
+        console.log(`⚠️  Falling back to local storage due to MongoDB error`);
+      }
+    } else {
+      console.warn("⚠️  MongoDB not connected (readyState:", mongoose.connection.readyState, "). Using local storage.");
+    }
+
+    // Fallback: Save to local storage if MongoDB is not available or save failed
+    componentId = componentIdCounter.toString();
     const newComponent = {
-      id: componentIdCounter.toString(),
-      _id: componentIdCounter.toString(), // Add _id for consistency
+      id: componentId,
+      _id: componentId,
       title,
       description,
       category,
       code,
       tags: tags || [],
       useTailwind: useTailwind || false,
-      author: req.user._id.toString(), // Use authenticated user's ID
-      authorName: req.user.fullName, // Store author name for local storage
+      author: authorId,
+      authorName: authorName,
       isPublic: true,
       likes: [],
       downloads: 0,
@@ -289,33 +372,21 @@ router.post("/", authenticateToken, async (req, res) => {
       updatedAt: new Date()
     };
 
-    // Store locally - use both id and _id as keys to ensure consistency
+    // Store locally
     localComponents.set(newComponent.id, newComponent);
     localComponents.set(newComponent._id, newComponent);
     componentIdCounter++;
 
-    // If MongoDB is connected, also save there
-    if (mongoose.connection.readyState === 1) {
-      const mongoComponent = new UIComponent({
-        title,
-        description,
-        category,
-        code,
-        tags: tags || [],
-        useTailwind: useTailwind || false,
-        author: req.user._id // Use authenticated user's ID
-      });
-      await mongoComponent.save();
-      console.log(`✅ New UI component saved to MongoDB: ${title} by ${req.user.email}`);
-    } else {
-      console.log(`✅ New UI component saved locally: ${title} by ${req.user.email} (Total: ${localComponents.size / 2})`);
-    }
-
-    console.log(`✅ New UI component created: ${title} by ${req.user.email}`);
+    console.log(`✅ New UI component saved locally: ${title} by ${authorEmail} (ID: ${componentId}, Total: ${localComponents.size / 2})`);
     res.status(201).json(newComponent);
   } catch (error) {
     console.error("Error creating component:", error);
-    res.status(500).json({ message: "Error creating component", error: error.message });
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      message: "Error creating component", 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

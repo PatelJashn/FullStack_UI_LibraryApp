@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 import './UIUploadModal.css';
 
 const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
-  const { token, isAuthenticated } = useAuth();
+  const { token, isAuthenticated, user } = useAuth();
   const [formData, setFormData] = useState({
     category: 'All',
     html: '',
@@ -32,6 +32,33 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // First, check if backend is reachable (with timeout)
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5002';
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
+      const healthCheck = await fetch(`${apiBaseUrl}/health`, {
+        method: 'GET',
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!healthCheck.ok) {
+        throw new Error(`Backend health check failed: ${healthCheck.status}`);
+      }
+      console.log('✅ Backend is reachable');
+    } catch (healthError) {
+      console.error('❌ Backend health check failed:', healthError);
+      const errorMsg = healthError.name === 'AbortError' 
+        ? 'Backend server did not respond (timeout)'
+        : healthError.message;
+      alert(`Cannot connect to backend server at ${apiBaseUrl}.\n\nError: ${errorMsg}\n\nPlease make sure:\n1. The backend server is running (npm start in backend folder)\n2. The API URL is correct\n3. There are no firewall/network issues`);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const componentData = {
         title: `Component ${Date.now()}`, // Auto-generate title
@@ -46,17 +73,33 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components`, {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      // Only add Authorization header if we have all three: token, authentication status, and user object
+      // This ensures we never send invalid/expired tokens
+      // If any of these are missing, upload will proceed as anonymous (which is fine)
+      if (token && isAuthenticated && user && user._id) {
+        headers['Authorization'] = `Bearer ${token}`;
+        console.log('📤 Sending request with authentication');
+      } else {
+        console.log('📤 Sending request as anonymous user');
+      }
+
+      const apiUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components`;
+      console.log('📤 Uploading to:', apiUrl);
+      console.log('📤 Component data:', componentData);
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: headers,
         body: JSON.stringify(componentData),
       });
 
       if (response.ok) {
         const savedComponent = await response.json();
+        console.log('✅ Component uploaded successfully:', savedComponent);
         onUpload(savedComponent);
         onClose();
         setFormData({
@@ -67,15 +110,35 @@ const UIUploadModal = ({ isOpen, onClose, onUpload }) => {
           tags: ''
         });
       } else {
-        const error = await response.json();
-        if (response.status === 401) {
-          alert('Please log in to upload components');
-        } else {
-          alert('Error uploading component: ' + error.message);
+        let errorMessage = 'Failed to upload component';
+        try {
+          const error = await response.json();
+          errorMessage = error.message || errorMessage;
+        } catch (e) {
+          errorMessage = `Server error: ${response.status} ${response.statusText}`;
         }
+        console.error('❌ Upload failed:', errorMessage);
+        alert('Error uploading component: ' + errorMessage);
       }
     } catch (error) {
-      alert('Error uploading component: ' + error.message);
+      console.error('❌ Upload error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+      
+      // Provide more helpful error messages
+      let errorMessage = 'Network error. ';
+      if (error.message === 'Failed to fetch') {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5002';
+        errorMessage += `Cannot connect to backend server at ${apiUrl}. `;
+        errorMessage += 'Please make sure the backend server is running.';
+      } else {
+        errorMessage += error.message || 'Please try again.';
+      }
+      
+      alert('Error uploading component: ' + errorMessage);
     } finally {
       setIsLoading(false);
     }
