@@ -1,15 +1,13 @@
 {
-  "name": "uiforge",
+  "name": "uiforge-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "server.js",
-  "engines": {
-    "node": "22.x"
-  },
   "scripts": {
     "start": "node server.js",
-    "dev": "npx kill-port 5002 && node server.js",
-    "build": "echo 'No build step needed for backend'"
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -18,9 +16,7 @@
     "express": "^4.18.2",
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.18.0",
     "mongoose": "^7.8.7",
-    "openai": "^5.15.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
   }
