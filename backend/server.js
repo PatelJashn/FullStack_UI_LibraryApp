@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -6,23 +5,24 @@ import mongoose from "mongoose";
 import passport from "passport";
 import session from "express-session";
 
-// Load environment variables early
+// Load environment variables FIRST
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors({ 
-  origin: [
-    "http://localhost:5173", 
-    "https://uiforge.vercel.app", // Your Vercel domain
-    "https://uiforge-git-main-pateljashn.vercel.app", // Your Vercel preview domain
-    "https://fullstack-ui-libraryapp.vercel.app", // Alternative Vercel domain
-    "https://*.vercel.app", // Allow all Vercel preview domains
-    process.env.FRONTEND_URL // Allow environment variable override
-  ].filter(Boolean), 
-  credentials: true 
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://uiforge.vercel.app",
+      "https://fullstack-ui-libraryapp.vercel.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(
   session({
@@ -30,17 +30,18 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000,
     },
-    name: 'uiforge-session' // Custom session name
+    name: "uiforge-session",
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
+// Import routes
 import authRoutes from "./routes/auth.js";
 import googleAuthRoutes from "./routes/googleAuth.js";
 import uiComponentRoutes from "./routes/uiComponents.js";
@@ -54,11 +55,10 @@ app.get("/", (req, res) => {
 app.get("/health", (req, res) => {
   res.json({
     status: "Server is running",
-    mongodb: mongoose.connection.readyState === 1 ? "Connected" : "Not connected",
-    mongodbState: mongoose.connection.readyState,
+    mongodb:
+      mongoose.connection.readyState === 1 ? "Connected" : "Not connected",
     mongoUri: process.env.MONGO_URI ? "Set" : "Not set",
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development"
+    time: new Date().toISOString(),
   });
 });
 
@@ -67,49 +67,35 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
 app.use("/api/ui-components", uiComponentRoutes);
 
-// MongoDB Connection and Server Start
-const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/uiforge";
-console.log("🔗 Attempting to connect to MongoDB...");
-console.log("📝 MongoDB URI:", mongoUri ? "Set" : "Not set");
+// ❗ Only connect to Atlas, no localhost fallback
+const mongoUri = process.env.MONGO_URI;
+console.log("🔗 Connecting to:", mongoUri);
 
-// Start server first, then connect to MongoDB
-const PORT = process.env.PORT || 5002;
-const server = app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`🌐 Server URL: http://localhost:${PORT}`);
-});
-
-// Connect to MongoDB with better error handling
 mongoose
   .connect(mongoUri, {
-    serverSelectionTimeoutMS: 10000, // increased timeout
+    serverSelectionTimeoutMS: 10000,
     socketTimeoutMS: 45000,
     bufferCommands: false,
   })
-  .then(() => {
-    console.log("✅ MongoDB Connected Successfully");
-    console.log("📊 MongoDB Status: Connected");
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err.message);
-    console.error("🔍 Error Details:", err);
-    console.log("💡 To fix this issue:");
-    console.log("   1. Check your MONGO_URI in Render environment variables");
-    console.log("   2. Make sure your IP is whitelisted in MongoDB Atlas (or use 0.0.0.0/0)");
-    console.log("   3. Verify your MongoDB Atlas cluster is running");
-    console.log("   4. Check if your database user has the correct permissions");
-    console.log("📊 MongoDB Status: Not connected - Server will continue without database");
-  });
+  .then(() => console.log("✅ Connected to Atlas via", "Mongoose"))
+  .catch((err) => console.log("❌ Mongo connection failed:", err.message));
 
-// Handle MongoDB connection events
-mongoose.connection.on('error', (err) => {
-  console.error('❌ MongoDB connection error:', err);
+// Mongo connection events
+mongoose.connection.on("error", (err) => {
+  console.log("❌ Mongo runtime error:", err.message);
 });
 
-mongoose.connection.on('disconnected', () => {
-  console.log('⚠️ MongoDB disconnected');
+mongoose.connection.on("disconnected", () => {
+  console.log("⚠️ Mongo disconnected");
 });
 
-mongoose.connection.on('connected', () => {
-  console.log('✅ MongoDB reconnected');
+mongoose.connection.on("connected", () => {
+  console.log("✅ Mongo connected");
+});
+
+// Start Server
+const PORT = process.env.PORT || 5002;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🌐 http://localhost:${PORT}`);
 });
