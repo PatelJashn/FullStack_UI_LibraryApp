@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "chmod +x node_modules/.bin/vite || true && vite build",
+    "build": "npm install && chmod -R +x node_modules/.bin && npx vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test:oauth": "node test-google-oauth.js",
     "setup:google": "node setup-google-oauth.js",
     "create:env": "node rename-env.js"
-  },
+  },  
   "engines": {
     "node": "24.x"
   },
