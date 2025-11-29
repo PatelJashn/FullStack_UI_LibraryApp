@@ -54,8 +54,7 @@ const UIComponentSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false,
-    default: null
+    required: true
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectId,

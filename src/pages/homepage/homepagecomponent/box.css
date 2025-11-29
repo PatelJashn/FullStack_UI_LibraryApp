@@ -1,69 +1,138 @@
-/* Reset and page defaults */
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    background-color: #1c1c1e; /* Dark page background */
-    color: #ffffff; /* White text */
-    transition: background-color 0.3s ease, color 0.3s ease;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* Light mode body */
-body[data-theme="light"] {
-    background-color: #ffffff;
-    color: #333333;
+.ui-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 50px 80px;
+  background: #101014;
+  transition: background 0.3s ease;
 }
 
-/* Ensure all elements respect box sizing */
-*, *::before, *::after {
-    box-sizing: inherit;
+@media (max-width: 1024px) {
+  .ui-grid {
+    padding: 40px 40px;
+  }
 }
 
-/* Main container for boxes */
-.container1 {
-    display: flex;
-    gap: 20px;
-    padding: 10px;
-    justify-content: space-between;
-    overflow: hidden;
-    background-color: #1c1c1e; /* Match body background to avoid white gap */
-    transition: background-color 0.3s ease;
+@media (max-width: 640px) {
+  .ui-grid {
+    padding: 30px 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 }
 
-/* Light mode container */
-body[data-theme="light"] .container1 {
-    background-color: #ffffff;
+body[data-theme="light"] .ui-grid {
+  background: #fdfdfd;
 }
 
-/* Individual box styling */
-.box1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 280px;
-    height: 280px;
-    background-color: #333;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, background-color 0.3s ease;
+.ui-card {
+  position: relative;
+  padding: 28px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* Light mode boxes */
-body[data-theme="light"] .box1 {
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e9ecef;
+.ui-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  padding: 1px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.3;
 }
 
-/* Hover effect for boxes */
-.box1:hover {
-    background-color: #444;
-    transform: scale(1.05);
+.ui-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
 }
 
-/* Light mode box hover */
-body[data-theme="light"] .box1:hover {
-    background-color: #e9ecef;
-    transform: scale(1.05);
+body[data-theme="light"] .ui-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+}
+
+.ui-card h4 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+body[data-theme="light"] .ui-card h4 {
+  color: #1e1b4b;
+}
+
+.ui-card p {
+  margin: 0 0 18px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+body[data-theme="light"] .ui-card p {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+.ui-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #f8fafc;
+  margin-bottom: 10px;
+}
+
+body[data-theme="light"] .ui-card-pill {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+.ui-preview-button {
+  border: none;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ui-preview-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.ui-accent-strip {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 40%);
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+body[data-theme="light"] .ui-preview-button {
+  color: #0f172a;
 }

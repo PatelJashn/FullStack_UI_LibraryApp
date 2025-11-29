@@ -4,56 +4,6 @@ import { Copy, Check, ArrowLeft, Code, Eye, Download, Send, Sparkles, Save, Edit
 import { useAuth } from "../../components/AuthContext";
 import "./ComponentDetail.css";
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyB2LvPcW2mVWLxdX-Yu40f-q-x1_NGOWyk";
-// Use the latest stable model name supported by v1beta
-const GEMINI_MODEL = "gemini-2.0-flash";
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-const buildAiInstruction = ({ baseHtml, baseCss, userPrompt, useTailwind }) => `
-You are an expert front-end engineer. Modify the provided component based on the user request.
-
-- Current component uses Tailwind classes: ${useTailwind ? "yes" : "no"}
-- HTML (between <HTML></HTML>):
-<HTML>
-${baseHtml || ""}
-</HTML>
-
-- CSS (between <CSS></CSS>):
-<CSS>
-${baseCss || ""}
-</CSS>
-
-User request:
-${userPrompt}
-
-Respond with JSON ONLY (no markdown) in this exact format:
-{
-  "html": "updated html string",
-  "css": "updated css string or empty when Tailwind handles styling",
-  "useTailwind": true or false
-}
-
-Ensure HTML and CSS are production-ready, concise, and reflect the request. Do not include explanations—only JSON.
-`;
-
-const parseGeminiResponse = (text) => {
-  if (!text) return null;
-  const trimmed = text.trim();
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    const match = trimmed.match(/\{[\s\S]*\}/);
-    if (match) {
-      try {
-        return JSON.parse(match[0]);
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }
-};
-
 const ComponentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -128,81 +78,38 @@ const ComponentDetail = () => {
 
   const handleAiPrompt = async () => {
     if (!aiPrompt.trim()) return;
-    if (!component) {
-      alert("Component data is still loading. Please try again in a moment.");
-      return;
-    }
-    if (!GEMINI_API_KEY) {
-      alert("Gemini API key is missing. Please set VITE_GEMINI_API_KEY.");
-      return;
-    }
-
+    
     setIsAiProcessing(true);
     setModifiedComponent(null);
     setShowModified(false);
     
     try {
-      const activeComponent = showModified && modifiedComponent ? modifiedComponent : component;
-      const baseHtml = activeComponent?.code?.html || "";
-      const baseCss = activeComponent?.code?.css || "";
-
-      const payload = {
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: buildAiInstruction({
-                  baseHtml,
-                  baseCss,
-                  userPrompt: aiPrompt,
-                  useTailwind: activeComponent?.useTailwind || false
-                })
-              }
-            ]
-          }
-        ]
-      };
-
-      const response = await fetch(GEMINI_ENDPOINT, {
-        method: "POST",
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5002'}/api/ui-components/${id}/ai-modify`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ prompt: aiPrompt })
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData?.error?.message || "Gemini request failed");
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to process AI request');
       }
 
       const data = await response.json();
-      const aiText =
-        data?.candidates?.[0]?.content?.parts
-          ?.map((part) => part.text || "")
-          .join("\n")
-          .trim() || "";
-
-      const parsed = parseGeminiResponse(aiText);
-
-      if (!parsed || (!parsed.html && !parsed.css)) {
-        throw new Error("AI response format was invalid. Please rephrase your request.");
+      
+      if (data.success) {
+        setModifiedComponent({
+          ...component,
+          code: data.modifiedCode
+        });
+        setShowModified(true);
+        setAiPrompt("");
+      } else {
+        throw new Error(data.message || 'AI processing failed');
       }
-
-      const updatedComponent = {
-        ...component,
-        useTailwind: typeof parsed.useTailwind === "boolean" ? parsed.useTailwind : component?.useTailwind || false,
-        code: {
-          html: parsed.html?.trim() || baseHtml,
-          css: parsed.useTailwind ? "" : (parsed.css?.trim() ?? baseCss),
-          js: component?.code?.js || ""
-        }
-      };
-
-      setModifiedComponent(updatedComponent);
-      setShowModified(true);
-      setAiPrompt("");
     } catch (error) {
       console.error("AI processing error:", error);
       alert(`AI Processing Error: ${error.message}`);

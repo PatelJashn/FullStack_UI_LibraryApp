@@ -5,28 +5,38 @@ import mongoose from "mongoose";
 import passport from "passport";
 import session from "express-session";
 
-// Load env FIRST
+// Load environment variables FIRST
 dotenv.config();
 
 const app = express();
 
-// ✅ CORS setup (will accept Vercel frontend calls + local dev tools)
-app.use(cors({
-  origin: "*", // most permissive — you can tighten later
-  credentials: true
-}));
+// Middleware
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://uiforge.vercel.app",
+      "https://fullstack-ui-libraryapp.vercel.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
+    credentials: true,
+  })
+);
 
 app.use(express.json());
-app.use(session({
-  secret: process.env.JWT_SECRET || "secret",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
+app.use(
+  session({
+    secret: process.env.JWT_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+    name: "uiforge-session",
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -36,49 +46,56 @@ import authRoutes from "./routes/auth.js";
 import googleAuthRoutes from "./routes/googleAuth.js";
 import uiComponentRoutes from "./routes/uiComponents.js";
 
-// ✅ Root test
+// Test route
 app.get("/", (req, res) => {
-  res.send("Backend running");
+  res.send("UI Forge Backend is Running...");
 });
 
-// ✅ Health check — critical for Render deployment
-app.get("/api/health", (req, res) => {
+// Health check route
+app.get("/health", (req, res) => {
   res.json({
-    server: "ok",
-    mongo: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-    time: new Date().toISOString()
+    status: "Server is running",
+    mongodb:
+      mongoose.connection.readyState === 1 ? "Connected" : "Not connected",
+    mongoUri: process.env.MONGO_URI ? "Set" : "Not set",
+    time: new Date().toISOString(),
   });
 });
 
-// ✅ Component test (your main goal)
-app.get("/api/components", (req, res) => {
-  res.json({ message: "components api working" });
-});
-
-// ✅ Mount your real routes (now actually active)
+// Use routes
 app.use("/api/auth", authRoutes);
-app.use("/api/auth/google", googleAuthRoutes);
+app.use("/api/auth", googleAuthRoutes);
 app.use("/api/ui-components", uiComponentRoutes);
 
-// ❗ Must connect only to Atlas — no localhost fallback
-const MONGO_URI = process.env.MONGO_URI;
-console.log("🔗 Connecting Mongo:", MONGO_URI);
+// ❗ Only connect to Atlas, no localhost fallback
+const mongoUri = process.env.MONGO_URI;
+console.log("🔗 Connecting to:", mongoUri);
 
-mongoose.connect(MONGO_URI, {
-  serverSelectionTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
-  bufferCommands: false
-})
-.then(() => console.log("✅ MongoDB connected"))
-.catch(err => console.log("❌ MongoDB failed:", err.message));
+mongoose
+  .connect(mongoUri, {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+    bufferCommands: false,
+  })
+  .then(() => console.log("✅ Connected to Atlas via", "Mongoose"))
+  .catch((err) => console.log("❌ Mongo connection failed:", err.message));
 
-// Connection events
-mongoose.connection.on("error", err => console.log("❌ Mongo runtime:", err.message));
-mongoose.connection.on("disconnected", () => console.log("⚠️ Mongo disconnected"));
-mongoose.connection.on("connected", () => console.log("✅ Mongo connected"));
+// Mongo connection events
+mongoose.connection.on("error", (err) => {
+  console.log("❌ Mongo runtime error:", err.message);
+});
 
-// ✅ Start server properly for Render (must support env port)
-const PORT = process.env.PORT || 10000;
+mongoose.connection.on("disconnected", () => {
+  console.log("⚠️ Mongo disconnected");
+});
+
+mongoose.connection.on("connected", () => {
+  console.log("✅ Mongo connected");
+});
+
+// Start Server
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
-  console.log(`✅ Server started on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🌐 http://localhost:${PORT}`);
 });

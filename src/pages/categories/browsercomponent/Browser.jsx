@@ -86,17 +86,11 @@ const UIGallery = () => {
     console.log('🔄 Adding new component:', newComponent.title, 'Category:', newComponent.category);
     console.log('📊 Current components before add:', components.length);
     
-    // Add the new component to the list immediately
     setComponents(prev => {
       const updated = [newComponent, ...prev];
       console.log('📊 Components after add:', updated.length);
       return updated;
     });
-    
-    // Also refresh from server to get the latest data (especially MongoDB _id)
-    setTimeout(() => {
-      fetchComponents();
-    }, 500);
   };
 
   const handleDeleteModeToggle = () => {
